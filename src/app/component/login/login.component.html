@@ -1,0 +1,95 @@
+<div class="fondo">
+  <div class="row">
+    <div class="col-md-4">
+    </div>
+    <div class="col-md-4 mt-5">
+      <div class="card text-center">
+        <div class="card-header">
+          Aqua <i class="bi bi-universal-access"></i> Ver. 1.0.5
+        </div>
+        <div class="card-body">
+          <h5 class="card-title"><i class="bi bi-upc-scan"></i> Ingresa tus credenciales</h5>
+          <hr class="text-secondary">
+          <form (ngSubmit)="onSubmit()" #formRegister="ngForm">
+            <div class="form-group row mb-3 col-md-12">
+              <label class="col-md-4 col-form-label">Tipo</label>
+              <div class="col-md-8">
+                <select class="form-select"
+                  name="tipoidentificacion"  
+                  [(ngModel)]="user.tipoIdentificacion" 
+                  #tipoIdentificacion="ngModel" 
+                  [ngClass]="{'is-invalid': tipoIdentificacion.value == '' }" 
+                required>
+                  <option value="">Seleccione una opción</option>
+                  <option value="CC">Cédula</option> 
+                  <option value="TI">Tarjeta de Identidad</option>
+                  <option value="CE">Cédula Extranjería</option>
+                  <option value="PS">Pasaporte</option>
+                </select> 
+                <span class="invalid-feedback" *ngIf="tipoIdentificacion.value == ''">No puedes dejar el campo sin selección</span>
+              </div>
+            </div>
+        
+            <div class="form-group row mb-3 col-md-12">
+              <label class="col-md-4 col-form-label">Número</label>
+              <div class="col-md-8">
+                <input class="form-control"
+                type="number"
+                name="numero"
+                [(ngModel)]="user.numero"
+                placeholder="Ingresa tu número"
+                required
+                maxlength="100"
+                #numero="ngModel"
+                [ngClass]="{ 'is-invalid': numero.errors?.required && numero.touched}">
+                  <span class="invalid-feedback" *ngIf="numero.errors?.required && numero.touched">El número es obligatorio</span>
+              </div>
+            </div>
+        
+            <div class="form-group row mb-3 col-md-12">
+              <label class="col-md-4 col-form-label">Contraseña</label>
+              <div class="col-md-8">
+                <input class="form-control"
+                type="password"
+                name="password"
+                [(ngModel)]="user.password"
+                placeholder="Ingresa tu contraseña"
+                required
+                maxlength="50" 
+                #password="ngModel"
+                [ngClass]="{ 'is-invalid': password.errors?.required && password.touched}">
+                <span class="invalid-feedback" *ngIf="password.errors?.required && password.touched">La contraseña es obligatoria</span>
+              </div>
+            </div>
+        
+            <div class="form-group row col-md-12">
+              <label class="col-md-5 col-form-label"></label>
+              <button class="col-md-7 mb-3 btn btn-primary" [disabled]="!formRegister.valid" type="submit">Ingresar</button>
+              <br>
+              <!-- *************************** FLAGS ******************************-->
+              <div style="margin: 0px 10px;">
+                <div *ngIf="flagLogin.code == 1" class="alert alert-success" role="alert">
+                  <strong><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> {{ flagLogin.message }}</strong> Espere un momento por favor ...
+                </div>
+                <div *ngIf="flagLogin.code == 2" class="alert alert-danger" role="alert">
+                  <strong>Error:</strong> {{ flagLogin.message }}
+                </div>
+                <div *ngIf="flagLogin.code == 3" class="alert alert-info" role="alert">
+                  <strong>Información: </strong> {{ flagLogin.message }}
+                </div>
+              </div>
+              <!-- ****************************************************************-->
+            </div>
+          </form>
+        </div>
+        <div class="card-footer text-muted">
+          Licencia de Uso: [ Acueducto Veredal de Puerres]<br>
+          <i class="bi bi-lightning-fill"></i> Desarrollado por: [ Kairos.net ]
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+    </div>
+  </div>
+  <br><br><br>
+</div>

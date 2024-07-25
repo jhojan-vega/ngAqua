@@ -1,0 +1,128 @@
+<h5><i class="bi bi-calendar2-fill"></i> Listado de Periodos Facturados</h5>
+<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+  <button class="btn btn-primary" type="button" (click)="onInvoice()" data-bs-toggle="modal" data-bs-target="#createModal"><i class="bi bi-plus-circle"></i> Generar Facturas</button>
+</div>
+<br>
+<!-- ** [ FLAGS ] ** -->
+<div *ngIf="flagInvoice.code == 1" class="alert alert-success" role="alert">
+  <strong><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> {{ flagInvoice.message }}</strong> Espere un momento por favor ...
+</div>
+<div *ngIf="flagInvoice.code == 2" class="alert alert-danger" role="alert">
+  <strong>Error:</strong> {{ flagInvoice.message }}
+</div>
+<div *ngIf="flagInvoice.code == 3" class="alert alert-info" role="alert">
+  <strong>Información: </strong> {{ flagInvoice.message }}
+</div>
+<!-- ** [ END FLAGS ] ** -->
+
+<!-- ** [ TABLE ] ** -->
+<table *ngIf="showInvoice" class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th class="text-center" scope="col">#</th>
+      <th scope="col">Periodo</th>
+      <th scope="col">Fecha Facturación</th>
+      <th scope="col">Fecha Pago</th>
+      <th class="text-center" scope="col">F. Generadas</th>
+      <th class="text-center" scope="col">F. Pagadas</th>
+      <th class="text-center" scope="col">Ver Facturas</th>
+      <th class="text-center" scope="col">Descargar</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let subjet of period, let i = index, let x = first">
+      <th class="text-center" scope="row">
+        <button *ngIf="x && true" (click)="onDelete()" class="btn btn-danger btn-custom-sm" type="button"><i class="bi bi-trash3"></i></button>
+        <span *ngIf="!x">{{i+1}}</span>
+      </th>
+      <td>{{subjet.periodo}}</td>
+      <td>{{subjet.fechafacturacion | date:'longDate'}}</td>
+      <td>{{subjet.fechapago | date:'longDate'}}</td>
+      <td class="text-center">{{subjet.facturasgeneradas}}</td>
+      <td class="text-center">{{subjet.facturaspagadas}}</td>
+      <td class="text-center"><button (click)="onView(period[i])" class="btn btn-secondary btn-sm"><i class="bi bi-files"></i> Ver</button></td>
+      <td class="text-center"><button (click)="onPrint(subjet)" class="btn btn-success btn-sm"><i class="bi bi-file-pdf"></i> Descargar</button></td>
+    </tr>
+  </tbody>
+</table>
+<!-- ** [ END TABLE ] ** -->
+
+<!-- ** [ MODAL ] ** -->
+<div #createModal class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <form (ngSubmit)="onSubmit()" #formRegister="ngForm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="createModalLabel"><i class="bi bi-receipt"></i> Generar Facturas</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body row">
+
+          <div class="form-group row mb-3 col-md-6">
+            <label class="col-md-4 col-form-label">Año</label>
+            <div class="col-md-8">
+              <input class="form-control"
+              disabled="disabled"
+              type="number"
+              name="numero"
+              [(ngModel)]="newPeriod.year"
+              placeholder="Ingresa tu año"
+              required
+              maxlength="100"
+              #numero="ngModel"
+              [ngClass]="{ 'is-invalid': numero.errors?.required}">
+                <span class="invalid-feedback" *ngIf="numero.errors?.required">El año es obligatorio</span>
+            </div>
+          </div>
+
+          <div class="form-group row mb-3 col-md-6">
+            <label class="col-md-4 col-form-label">Mes</label>
+            <div class="col-md-8">
+              <select class="form-select"
+                name="month"  
+                [(ngModel)]="newPeriod.month" 
+                #month="ngModel" 
+                [ngClass]="{'is-invalid': month.value == '' }" 
+              required>
+                <option value="">Seleccione una opción</option>
+                <option value="1">Enero</option>
+                <option value="2">Febrero</option>
+                <option value="3">Marzo</option>
+                <option value="4">Abril</option>
+                <option value="5">Mayo</option>
+                <option value="6">Junio</option>
+                <option value="7">Julio</option>
+                <option value="8">Agosto</option>
+                <option value="9">Septiembre</option>
+                <option value="10">Octubre</option>
+                <option value="11">Noviembre</option>
+                <option value="12">Diciembre</option>
+              </select> 
+              <span class="invalid-feedback" *ngIf="month.value == ''">No puedes dejar el campo sin selección</span>
+            </div>
+          </div>
+
+          <!-- ** [ FLAG ] ** -->
+          <div class="container">
+            <div *ngIf="flagBill.code == 1" class="alert alert-success" role="alert">
+              <strong><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> {{ flagBill.message }}</strong> Espere un momento por favor ...
+            </div>
+            <div *ngIf="flagBill.code == 2" class="alert alert-danger" role="alert">
+              <strong>Alerta:</strong> {{ flagBill.message }}
+            </div>
+            <div *ngIf="flagBill.code == 3" class="alert alert-info" role="alert">
+              <strong>Información: </strong> {{ flagBill.message }}
+            </div>
+          </div>
+          <!-- ** [ END FLAG ] ** -->
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button [disabled]="!formRegister.valid" type="submit" class="btn btn-primary">Generar Facturación</button>
+        </div>
+      </div>
+  </form>
+  </div>
+</div>
+<!-- ** [ END MODAL ] ** -->

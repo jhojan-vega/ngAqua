@@ -1,0 +1,181 @@
+<h5><i class="bi bi-person-circle"></i> Listado de Propietarios</h5>
+<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+  <button class="btn btn-primary" type="button" (click)="reset()" data-bs-toggle="modal" data-bs-target="#createModal"><i class="bi bi-plus-circle"></i> Crear Propietario</button>
+</div>
+<br>
+<!-- ** [ FLAGS ] ** -->
+<div *ngIf="flagOwner.code == 1" class="alert alert-success" role="alert">
+  <strong><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> {{ flagOwner.message }}</strong> Espere un momento por favor ...
+</div>
+<div *ngIf="flagOwner.code == 2" class="alert alert-danger" role="alert">
+  <strong>Error:</strong> {{ flagOwner.message }}
+</div>
+<div *ngIf="flagOwner.code == 3" class="alert alert-info" role="alert">
+  <strong>Información: </strong> {{ flagOwner.message }}
+</div>
+<!-- ** [ END FLAGS ] ** -->
+
+<!-- ** [ TABLE ] ** -->
+<table *ngIf="showOwner" class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Documento</th>
+      <th scope="col">Nombres</th>
+      <th scope="col">Apellidos</th>
+      <th scope="col">Teléfono</th>
+      <th scope="col">Correo</th>
+      <th scope="col">Tareas</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let subjet of owner, let i = index">
+      <th scope="row">{{1+i}}</th>
+      <td>{{subjet.tipoidentificacion}} {{subjet.numero}}</td>
+      <td>{{subjet.nombres}}</td>
+      <td>{{subjet.apellidos}}</td>
+      <td>{{subjet.telefono}}</td>
+      <td>{{subjet.correo}}</td>
+      <td><button (click)="onEdit(owner[i], i)" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#createModal">Editar</button></td>
+    </tr>
+  </tbody>
+</table>
+<!-- ** [ END TABLE ] ** -->
+
+<!-- ** [ MODAL ] ** -->
+<div #createModal class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <form (ngSubmit)="onSubmit()" #formRegister="ngForm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 *ngIf="!edit" class="modal-title fs-5" id="createModalLabel"><i class="bi bi-person-fill-add"></i> Registrar Propietarios</h1>
+          <h1 *ngIf="edit" class="modal-title fs-5" id="createModalLabel"><i class="bi bi-person-fill-up"></i> Modificar Propietarios</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body row">
+          <div class="form-group row mb-3 col-md-6">
+            <label class="col-md-4 col-form-label">Tipo Identificación</label>
+            <div class="col-md-8">
+              <select class="form-select"
+                [disabled]="edit"
+                name="tipoidentificacion"  
+                [(ngModel)]="newOwner.tipoidentificacion" 
+                #tipoidentificacion="ngModel" 
+                [ngClass]="{'is-invalid': tipoidentificacion.value == '' }" 
+              required>
+                <option value="">Seleccione una opción</option>
+                <option value="CC">Cédula</option> 
+                <option value="TI">Tarjeta de Identidad</option>
+                <option value="CE">Cédula Extranjería</option>
+                <option value="PS">Pasaporte</option>
+              </select> 
+              <span class="invalid-feedback" *ngIf="tipoidentificacion.value == ''">No puedes dejar el campo sin selección</span>
+            </div>
+          </div>
+
+          <div class="form-group row mb-3 col-md-6">
+            <label class="col-md-4 col-form-label">Número</label>
+            <div class="col-md-8">
+              <input class="form-control"
+              [disabled]="edit"
+              type="number"
+              name="numero"
+              [(ngModel)]="newOwner.numero"
+              placeholder="Ingresa tu número"
+              required
+              maxlength="100"
+              #numero="ngModel"
+              [ngClass]="{ 'is-invalid': numero.errors?.required}">
+                <span class="invalid-feedback" *ngIf="numero.errors?.required">El número es obligatorio</span>
+            </div>
+          </div>
+
+          <div class="form-group row mb-3 col-md-6">
+            <label class="col-md-4 col-form-label">Nombres</label>
+            <div class="col-md-8">
+              <input class="form-control"
+              type="text"
+              name="nombres"
+              [(ngModel)]="newOwner.nombres"
+              placeholder="Ingresa tus nombres"
+              required
+              maxlength="50" 
+              #nombres="ngModel"
+              [ngClass]="{ 'is-invalid': nombres.errors?.required}">
+              <span class="invalid-feedback" *ngIf="nombres.errors?.required">Los nombres son obligatorios</span>
+            </div>
+          </div>
+      
+          <div class="form-group row mb-3 col-md-6">
+            <label class="col-md-4 col-form-label">Apellidos</label>
+            <div class="col-md-8">
+              <input class="form-control"
+              type="text"
+              name="apellidos"
+              [(ngModel)]="newOwner.apellidos"
+              placeholder="Ingresa tus apellidos"
+              required
+              maxlength="50"
+              #apellidos="ngModel"
+              [ngClass]="{ 'is-invalid': apellidos.errors?.required}">
+                <span class="invalid-feedback" *ngIf="apellidos.errors?.required">Los apellidos son obligatorios</span>
+            </div>
+          </div>
+      
+          <div class="form-group row mb-3 col-md-6">
+            <label class="col-md-4 col-form-label">Teléfono / Celular</label>
+            <div class="col-md-8">
+              <input class="form-control"
+              type="number"
+              name="telefono"
+              [(ngModel)]="newOwner.telefono"
+              placeholder="Ingresa un teléfono o celular"
+              required
+              #telefono="ngModel"
+              [ngClass]="{ 'is-invalid': telefono.errors?.required }">
+                <span class="invalid-feedback" *ngIf="telefono.errors?.required">El teléfono / celular es obligatorio</span>
+            </div>
+          </div>
+          
+          <div class="form-group row mb-3 col-md-6">
+            <label class="col-md-4 col-form-label">Correo electrónico</label>
+            <div class="col-md-8">
+              <input class="form-control"
+              type="email"
+              name="correo"
+              [(ngModel)]="newOwner.correo"
+              placeholder="Ingresa tu correo electrónico"
+              required
+              pattern="[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,5}"
+              #correo="ngModel"
+              [ngClass]="{'is-invalid': correo.errors?.required || !correo.valid }" v>
+                <span class="invalid-feedback" *ngIf="correo.errors?.required">El correo electrónico es obligatorio<br></span>
+                <span class="invalid-feedback" *ngIf="!correo.valid && correo.touched">El formato del correo es incorrecto</span>
+            </div>
+          </div>
+
+          <!-- ** [ FLAG ] ** -->
+          <div class="container">
+            <div *ngIf="flagRegister.code == 1" class="alert alert-success" role="alert">
+              <strong><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> {{ flagRegister.message }}</strong> Espere un momento por favor ...
+            </div>
+            <div *ngIf="flagRegister.code == 2" class="alert alert-danger" role="alert">
+              <strong>Alerta:</strong> {{ flagRegister.message }}
+            </div>
+            <div *ngIf="flagRegister.code == 3" class="alert alert-info" role="alert">
+              <strong>Información: </strong> {{ flagRegister.message }}
+            </div>
+          </div>
+          <!-- ** [ END FLAG ] ** -->
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button *ngIf="!edit" [disabled]="!formRegister.valid" type="submit" class="btn btn-primary">Registrar</button>
+          <button *ngIf="edit" [disabled]="!formRegister.valid" type="submit" class="btn btn-primary">Modificar</button>
+        </div>
+      </div>
+  </form>
+  </div>
+</div>
+<!-- ** [ END MODAL ] ** -->

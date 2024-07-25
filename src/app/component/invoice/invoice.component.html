@@ -1,0 +1,117 @@
+<h5><i class="bi bi-receipt"></i> Listado de Facturaciones <span *ngIf="showInvoice">{{period.periodo}}</span></h5>
+<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+  <button class="btn btn-primary" type="button" (click)="onInvoice()"><i class="bi bi-backspace-fill"></i> Regresar</button>
+</div>
+<br>
+<!-- ** [ FLAGS ] ** -->
+<div *ngIf="flagInvoice.code == 1" class="alert alert-success" role="alert">
+  <strong><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> {{ flagInvoice.message }}</strong> Espere un momento por favor ...
+</div>
+<div *ngIf="flagInvoice.code == 2" class="alert alert-danger" role="alert">
+  <strong>Error:</strong> {{ flagInvoice.message }}
+</div>
+<div *ngIf="flagInvoice.code == 3" class="alert alert-info" role="alert">
+  <strong>Información: </strong> {{ flagInvoice.message }}
+</div>
+<!-- ** [ END FLAGS ] ** -->
+
+<!-- ** [ TABLE ] ** -->
+<table *ngIf="showInvoice" class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">No. Factura</th>
+      <th scope="col">Propietario</th>
+      <th scope="col">Dirección</th>
+      <th scope="col">Catastral</th>
+      <th scope="col">Valor a Pagar</th>
+      <th scope="col">Ver Facturas</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let subjet of invoice, let i = index">
+      <th scope="row">{{i+1}}</th>
+      <td class="text-center">{{subjet.id}}</td>
+      <td>{{subjet.nombres}} {{subjet.apellidos}}</td>
+      <td>{{subjet.direccion}}</td>
+      <td>{{subjet.catastral}}</td>
+      <td class="text-center">{{subjet.valorfactura | currency: 'COP'}}</td>
+      <td><button (click)="onView(invoice[i])" class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#viewInvoice"><i class="bi bi-files"></i> Ver</button></td>
+    </tr>
+  </tbody>
+</table>
+<!-- ** [ END TABLE ] ** -->
+
+<!-- ** [ MODAL ] ** -->
+<div #createModal class="modal fade" id="viewInvoice" tabindex="-1" aria-labelledby="viewInvoiceLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="viewInvoiceLabel"><i class="bi bi-receipt"></i> Factura Acueducto Mes de <span *ngIf="showInvoice">{{period.periodo}}</span></h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div *ngIf="showInvoice" class="modal-body row">
+        <div class="container row">
+          
+          <div class="col-sm-4 mb-1">
+            <div class="card">
+              <h5 class="card-header">Información Propietario</h5>
+              <div class="card-body">
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item"><strong><i class="bi bi-person-vcard-fill" style="color: #333333;"></i></strong> {{bill.tipo}} {{bill.numero}}</li>
+                  <li class="list-group-item"><strong><i class="bi bi-person-circle" style="color: #333333;"></i></strong> {{bill.nombres}} {{bill.apellidos}}</li>
+                  <li class="list-group-item"><strong><i class="bi bi-house-fill" style="color: #333333;"></i></strong> {{bill.direccion}}</li>
+                  <li class="list-group-item"><strong><i class="bi bi-telephone-fill" style="color: #333333;"></i></strong> {{bill.telefono}}</li>
+                  <li class="list-group-item"><strong><i class="bi bi-buildings-fill" style="color: #333333;"></i></strong> {{bill.descripcion}}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-4 mb-1">
+            <div class="card">
+              <h5 class="card-header">Información Factura</h5>
+              <div class="card-body">
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item"><strong>Estrato:</strong> {{bill.estrato}}</li>
+                  <li class="list-group-item"><strong>No Factura:</strong> {{bill.id}}</li>
+                  <li class="list-group-item"><strong>Periodo:</strong> {{period.periodo}}</li>
+                  <li class="list-group-item"><strong>Pago:</strong> {{period.fechapago | date:'longDate'}}</li>
+                  <li class="list-group-item"><strong>Facturación:</strong> {{period.fechafacturacion | date:'longDate'}}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-4 mb-1">
+            <div class="card">
+              <h5 class="card-header"><i class="bi bi-currency-exchange" style="color: #666666;"></i> TOTAL: {{bill.valorfactura | currency: 'COP'}}</h5>
+              <div class="card-body">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Concepto</th>
+                      <th class="text-center">Valor</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let body of bill.conceptos, let i = index">
+                      <td><i *ngIf="body.descripcion != null" style="cursor: pointer;" title="{{body.descripcion}}" class="bi bi-exclamation-square"></i> {{body.concepto}}</td>
+                      <td [ngClass]="{verde: body.abono, rojo: !body.abono}" class="text-center">{{body.valor | currency: 'COP'}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="submit" class="btn btn-primary">Imprimir Factura</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ** [ END MODAL ] ** -->

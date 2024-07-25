@@ -1,0 +1,200 @@
+<h5 class="mb-3"><i class="bi bi-chat-square-text-fill"></i> Listado de Novedades</h5>
+<div>
+  <div class="row">
+    <div class="col-md-6">
+      <div *ngIf="showNovelty" class="form-group row">
+        <label class="col-md-2 col-form-label">Periodo</label>
+        <div class="col-md-10">
+          <select class="form-select" name="periodo" (change)="onChange(periodo.value)" #periodo>
+            <option value="0">Mostrar todo</option>
+            <option value="{{lastPeriod.mes}}|{{lastPeriod.anio}}">{{lastPeriod.periodo}}</option>
+            <option *ngFor="let row of period" [value]="row.mes+'|'+row.anio">{{row.periodo}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <button class="btn btn-danger" type="button" (click)="onDelete()" title="Eliminar Novedades Seleccionadas"><i class="bi bi-x-circle"></i> Eliminar</button>
+        <button class="btn btn-primary" type="button" (click)="createNovelty()" data-bs-toggle="modal" data-bs-target="#createModal"><i class="bi bi-plus-circle"></i> Crear Novedad</button>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+<!-- ** [ FLAGS ] ** -->
+<div *ngIf="flagNovelty.code == 1" class="alert alert-success" role="alert">
+  <strong><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> {{ flagNovelty.message }}</strong> Espere un momento por favor ...
+</div>
+<div *ngIf="flagNovelty.code == 2" class="alert alert-danger" role="alert">
+  <strong>Error:</strong> {{ flagNovelty.message }}
+</div>
+<div *ngIf="flagNovelty.code == 3" class="alert alert-info" role="alert">
+  <strong>Información: </strong> {{ flagNovelty.message }}
+</div>
+<!-- ** [ END FLAGS ] ** -->
+
+<!-- ** [ TABLE ] ** -->
+<table *ngIf="showNovelty" class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th scope="col" class="text-center">
+        <input class="form-check-input" type="checkbox" (change)="onSelectAll(deleteNovelty.checked)" value="" id="deleteNovelty" #deleteNovelty>
+      </th>
+      <th scope="col">Documento</th>
+      <th scope="col">Propietario</th>
+      <th scope="col">Inmueble</th>
+      <th scope="col">Concepto</th>
+      <th scope="col" class="text-center">Periodo</th>
+      <th scope="col" class="text-center">Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let row of novelty, let i = index">
+      <th class="text-center">
+        <i *ngIf="row.estado=='1'" class="bi bi-check-square"></i>
+        <input *ngIf="row.estado=='0'" class="form-check-input" type="checkbox" [(ngModel)]="row.seleccionado">
+      </th>
+      <td>{{row.inmueble.propietario.tipoidentificacion}} {{row.inmueble.propietario.numero}}</td>
+      <td>{{row.inmueble.propietario.nombres}} {{row.inmueble.propietario.apellidos}}</td>
+      <td>{{row.inmueble.direccion}}</td>
+      <td>{{row.concepto.descripcion}} ({{row.valor | currency: 'COP'}})</td>
+      <td class="text-center">{{row.mes | convertir: "mes"}} {{row.anio}}</td>
+      <td class="text-center">{{row.estado | convertir: "novelty"}}</td>
+    </tr>
+  </tbody>
+</table>
+<!-- ** [ END TABLE ] ** -->
+
+<!-- ** [ MODAL ] ** -->
+<div #createModal class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <form (ngSubmit)="onSubmit()" #formRegister="ngForm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="createModalLabel"><i class="bi bi-chat-square-text-fill"></i> Registrar Novedades [ Periodo: <span class="text-secondary">{{lastPeriod.periodo}}</span> ]</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body row">
+          
+          <div class="row" *ngIf="loadCreate">
+            <!--<div class="row col-md-12">-->
+              <div class="form-group row mb-3 col-md-6">
+                <label class="col-md-3 col-form-label">Concepto</label>
+                <div class="col-md-9">
+                  <select class="form-select"
+                    name="concepto"  
+                    [(ngModel)]="newNovelty.concepto" 
+                    #concepto 
+                    [ngClass]="{'is-invalid': concepto.value == '' }" 
+                  required>
+                    <option value="">Seleccione una opción</option>
+                    <option *ngFor="let row of concept" [value]="row.id">{{row.descripcion}}</option>
+                  </select> 
+                  <span class="invalid-feedback" *ngIf="concepto.value == ''">No puedes dejar el campo sin selección</span>
+                </div>
+              </div>
+  
+              <div class="form-group row mb-3 col-md-6">
+                <label class="col-md-3 col-form-label">inmueble</label>
+                <div class="col-md-9">
+                  <ng-select class="form-select custom"
+                    name="inmueble"
+                    id="inmueble"
+                    [(ngModel)]="newNovelty.inmueble" 
+                    #inmueble="ngModel"
+                    [ngClass]="{'is-invalid': inmueble.value == '' }" 
+                  required>
+                    <ng-option value="">Seleccione una opción</ng-option>
+                    <input type="text">
+                    <ng-option *ngFor="let row of property" [value]="row.id">[ {{row.propietario.nombres}} {{row.propietario.apellidos}} ] {{row.direccion}}</ng-option>
+                  </ng-select> 
+                  <span class="invalid-feedback" *ngIf="inmueble.value == ''">No puedes dejar el campo sin selección</span>
+                </div>
+              </div>
+  
+              <div class="form-group row mb-3 col-md-6">
+                <label class="col-md-3 col-form-label">Valor</label>
+                <div class="col-md-9">
+                  <input class="form-control"
+                  type="number"
+                  name="valor"
+                  [(ngModel)]="newNovelty.valor"
+                  placeholder="Ingresa el valor de la novedad"
+                  required
+                  maxlength="100"
+                  #valor="ngModel"  
+                  [ngClass]="{ 'is-invalid': valor.errors?.required}">
+                    <span class="invalid-feedback" *ngIf="valor.errors?.required">El valor es obligatorio</span>
+                </div>
+              </div>
+
+              <div class="form-group row mb-3 col-md-6">
+                <label class="col-md-3 col-form-label">Observación</label>
+                <div class="col-md-9">
+                  <input class="form-control"
+                  type="text"
+                  name="observacion"
+                  [(ngModel)]="newNovelty.observacion"
+                  placeholder="Puede ingresar una observación de la novedad"
+                  maxlength="100"
+                  #observacion="ngModel"  
+                  [ngClass]="{ 'is-invalid': observacion.errors?.required}">
+                    <span class="invalid-feedback" *ngIf="observacion.errors?.required">El observacion es obligatorio</span>
+                </div>
+                <!--<div class="form-group mb-3 col-md-1">
+                  <button class="btn btn-success" (click)="addNovelty()"><i class="bi bi-arrow-down-square"></i></button>
+                </div>-->
+              </div>
+
+            <!--</div>-->
+
+            <!--<div class="col-md-12">
+              <table class="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col" class="text-center">No</th>
+                    <th scope="col">Propietario</th>
+                    <th scope="col">Inmueble</th>
+                    <th scope="col">Concepto</th>
+                    <th scope="col">Valor</th>
+                    <th scope="col">Periodo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of listNovelty, let i = index">
+                    <th class="text-center">{{i+1}}</th>
+                    <td>{{row.nombres}} {{row.apellidos}}</td>
+                    <td>{{row.direccion}} [ {{row.catastral}} ]</td>
+                    <td>{{row.concepto}}</td>
+                    <td>{{row.valor | currency: 'COP'}}</td>
+                    <td>{{row.mes | convertir: "mes"}} {{row.anio}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>-->
+          </div>
+          <!-- ** [ FLAG ] ** -->
+          <div class="container">
+            <div *ngIf="flagRegister.code == 1" class="alert alert-success" role="alert">
+              <strong><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> {{ flagRegister.message }}</strong> Espere un momento por favor ...
+            </div>
+            <div *ngIf="flagRegister.code == 2" class="alert alert-danger" role="alert">
+              <strong>Alerta:</strong> {{ flagRegister.message }}
+            </div>
+            <div *ngIf="flagRegister.code == 3" class="alert alert-info" role="alert">
+              <strong>Información: </strong> {{ flagRegister.message }}
+            </div>
+          </div>
+          <!-- ** [ END FLAG ] ** -->
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button [disabled]="!formRegister.valid" type="submit" class="btn btn-primary">Registrar</button>
+        </div>
+      </div>
+  </form>
+  </div>
+</div>
+<!-- ** [ END MODAL ] ** -->

@@ -1,0 +1,121 @@
+<div class="row mb-2">  
+  <h5 class="col-md-6"><i class="bi bi-credit-card-fill"></i> Registrar Pagos</h5>
+  <div class="col-md-6 gap-2 d-md-flex justify-content-md-end">
+    <button [disabled]="registerPay" class="btn btn-secondary" type="reset" (click)="reset()"><i class="bi bi-eraser-fill"></i> Borrar</button>
+  </div>
+</div>
+<div class="row">     
+  <div class="col-sm-4 mb-3">
+    <h6 class="mb-3"><i class="bi bi-search" style="color: #666666;"></i> Buscar</h6>
+    <form #formSearch="ngForm" (submit)="onSubmit()">
+      <div class="row">
+        <div class="form-group row col-md-10">
+          <label class="col-md-2 col-form-label">Valor</label>
+          <div class="col-md-10">
+            <input class="form-control"
+            type="text"
+            name="buscar"
+            #buscar
+            [(ngModel)]="find.value"
+            placeholder="No. Factura / Nombres"
+            required
+            [disabled]="showData"
+            #buscar="ngModel"
+            [ngClass]="{ 'is-invalid': buscar.errors?.required && buscar.touched}">
+              <span class="invalid-feedback" *ngIf="buscar.errors?.required">El valor es obligatorio</span>
+          </div>
+        </div>
+  
+        <div class="form-group col-md-2">
+          <button [disabled]="!formSearch.valid" class="btn btn-primary" type="submit">Buscar</button>
+        </div>
+      </div>
+
+      <div class="form-group col-md-12 row">
+        <div class="col-md-2"></div>
+        <div class="form-check col-md-10">
+          <input class="form-check-input" type="checkbox" (change)="onChangeCheck(findInvoice.checked)" value="" id="flexCheckChecked" #findInvoice checked>
+          <label class="form-check-label" for="flexCheckChecked">
+            Buscar por No. de Factura
+          </label>
+        </div>
+      </div>
+    </form> 
+  </div>
+
+  <div class="col-sm-8 mb-3">
+    <h6 class="mb-3"><i class="bi bi-currency-dollar" style="color: #666666;"></i> Pagar <span *ngIf="showData">[ <i class="bi bi-receipt"></i> Factura: {{pay.invoice}} ]</span></h6>
+    <form #formPay="ngForm" (submit)="onPay()">
+      <div class="row">
+        <div class="form-group row col-md-10">
+          <label class="col-md-9 col-form-label">
+            <span class="owner" *ngIf="!showData"><i class="bi bi-person-circle"></i> Propietario Inmueble<br><i class="bi bi-house-fill"></i> Dirección Inmueble</span>
+            <span class="owner" *ngIf="showData"><i class="bi bi-person-circle"></i> {{pay.owner}}<br><i class="bi bi-house-fill"></i> {{pay.address}}</span>
+          </label>
+          <div class="col-md-3">
+            <input class="form-control"
+            type="number"
+            name="valor"
+            #valor
+            [(ngModel)]="pay.value"
+            placeholder="Valor factura"
+            required
+            [disabled]="!showData || registerPay"
+            #valor="ngModel"
+            [ngClass]="{ 'is-invalid': valor.errors?.required && valor.touched }">
+              <span class="invalid-feedback" *ngIf="valor.errors?.required">El valor es obligatorio</span>
+          </div>
+        </div>
+  
+        <div class="form-group col-md-2">
+          <button [disabled]="!formPay.valid || registerPay" class="btn btn-primary" type="submit">Pagar</button>
+        </div>
+      </div>
+    </form>    
+  </div>
+
+  <!-- ** [ FLAGS ] ** -->
+  <div *ngIf="flagSearch.code == 1" class="alert alert-success" role="alert">
+    <strong><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> {{ flagSearch.message }}</strong> Espere un momento por favor ...
+  </div>
+  <div *ngIf="flagSearch.code == 2" class="alert alert-danger" role="alert">
+    <strong>Error:</strong> {{ flagSearch.message }}
+  </div>
+  <div *ngIf="flagSearch.code == 3" class="alert alert-info" role="alert">
+    <strong>Información: </strong> {{ flagSearch.message }}
+  </div>
+  <!-- ** [ END FLAGS ] ** -->
+
+  <div class="col-sm-12 mb-1">
+    <table *ngIf="showData" class="table table-striped">
+      <thead>
+        <tr>
+          <th>Documento</th>
+          <th>Usuario</th>
+          <th>Inmueble</th>
+          <th>Factura</th>
+          <th class="text-center">Valor</th>
+          <th class="text-center">Seleccionar</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let body of search, let isFirst = first">
+          <td>
+            {{body.tipoidentificacion}} {{body.numero}}
+          </td>
+          <td>{{body.nombres}} {{body.apellidos}}</td>
+          <td>{{body.direccion}}</td>
+          <td>{{body.periodo}} [ <i class="bi bi-receipt"></i> No. {{body.id}} ]</td>
+          <td class="text-center">
+            {{body.valorfactura | currency: 'COP'}}
+            <i title="Factura Pagada: {{body.valorpagado}}" [ngClass]="{verde: body.valorpagado != null, rojo: body.valorpagado == null}" *ngIf="body.valorpagado != null" class="bi bi-hand-thumbs-up"></i>
+            <i title="Factura No Pagada" [ngClass]="{verde: body.valorpagado != null, rojo: body.valorpagado == null}" *ngIf="body.valorpagado == null" class="bi bi-hand-thumbs-down"></i>
+            <button title="Borrar el último pago" *ngIf="pay.lastInvoice == pay.invoice && isFirst && body.valorpagado" (click)="onDelete()" class="btn btn-danger btn-custom-sm ms-2" type="button"><i class="bi bi-trash3"></i></button>
+          </td>
+          <td class="text-center"><input (change)="onChange(body)" type="radio" name="tableInvoice" [id]="body.id" [checked]="isFirst && true"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+</div>

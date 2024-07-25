@@ -1,1 +1,40 @@
-/* You can add global styles to this file, and also import other style files */
+.ng-dropdown-panel {
+    background-color: white;
+    padding: 5px 10px;
+    left: 1px;
+    top: 36px;
+    box-shadow: 0px 0px 4px #B5B5B5;
+    border-radius: 5px;
+    border: solid 1px #6E6E6E;
+}
+
+.verde {
+    color: green;
+}
+
+.rojo {
+    color: red;
+}
+
+.owner {
+    border: 1px solid #999;
+    border-radius: 5px;
+    background-color: #ccc;
+    padding: 6px 15px;
+    text-align: center;
+    color: #444;
+    width: 100%;
+    display: block;
+    margin: -7px 5px;
+    overflow: hidden;
+}
+
+.btn-custom-sm {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.fondo {
+    background-color: #ccc;
+    height: 100%;
+}
