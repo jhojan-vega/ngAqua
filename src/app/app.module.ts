@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule} from '@angular/platform-browser/animations'
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule} from "@angular/common/http";
@@ -14,6 +15,7 @@ import { InvoiceComponent } from './component/invoice/invoice.component';
 import { PeriodComponent } from './component/period/period.component';
 import { PayComponent } from './component/pay/pay.component';
 import { NoveltyComponent } from './component/novelty/novelty.component';
+import { DashBoardComponent } from './component/dash-board/dash-board.component';
 
 import { LoginService } from './services/login.service';
 import { UserService } from './services/user.service';
@@ -21,6 +23,8 @@ import { UserService } from './services/user.service';
 import { ConvertirPipe } from './pipes/convertir.pipes';
 
 import { NgSelectModule } from '@ng-select/ng-select';
+
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 //Estas líneas se usan para configurar el idioma de las fechas en español
 import { LOCALE_ID } from '@angular/core';
@@ -41,14 +45,17 @@ registerLocaleData(localeEs, 'es-CO');
     PeriodComponent,
     PayComponent,
     NoveltyComponent,
-    ConvertirPipe
+    ConvertirPipe,
+    DashBoardComponent
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    NgSelectModule
+    NgSelectModule,
+    NgxChartsModule
   ],
   providers: [
     LoginService,

@@ -1,0 +1,47 @@
+<h4 class="text-center"><i class="bi bi-easel2"></i> Panel de Información</h4>
+<hr>
+<div class="container text-center">
+  <div class="row justify-content-md-center">
+    <div class="col-md-auto">
+      <h5>Usuarios Acueducto</h5>
+      <hr>
+      <ngx-charts-bar-vertical
+        [view]="view"
+        [scheme]="colorScheme"
+        [results]="single"
+        [gradient]="gradient"
+        [xAxis]="showXAxis"
+        [yAxis]="showYAxis"
+        [legend]="showLegend"
+        [showXAxisLabel]="showXAxisLabel"
+        [showYAxisLabel]="showYAxisLabel"
+        [xAxisLabel]="xAxisLabel"
+        [yAxisLabel]="yAxisLabel"
+        (select)="onSelect($event)">
+      </ngx-charts-bar-vertical>
+    </div>
+    <div class="col-md-auto">
+      <h5>Recaudo últimos 6 meses</h5>
+      <hr>
+      <ngx-charts-bar-vertical-2d
+        [view]="view1"
+        [scheme]="colorScheme1"
+        [results]="multi"
+        [gradient]="gradient1"
+        [xAxis]="showXAxis1"
+        [yAxis]="showYAxis1"
+        [legend]="showLegend1"
+        [showXAxisLabel]="showXAxisLabel1"
+        [showYAxisLabel]="showYAxisLabel1"
+        [xAxisLabel]="xAxisLabel1"
+        [yAxisLabel]="yAxisLabel1"
+        [legendTitle]="legendTitle1"
+        [yScaleMax]="yScaleMax"
+        (select)="onSelect1($event)"
+        (activate)="onActivate1($event)"
+        (deactivate)="onDeactivate1($event)">
+      </ngx-charts-bar-vertical-2d>
+    </div>
+  </div>
+</div>
+

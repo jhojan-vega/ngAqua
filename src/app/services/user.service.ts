@@ -6,7 +6,7 @@ import { Period } from '../interfaces/period.interface';
 @Injectable()
 export class UserService {
 	//public url="http://localhost/aqua/web/user";	
-	public url="https://www.unicatolicadelsur.edu.co/aqua/web/user";	
+	public url="https://aqua.bugs.com.co/web/user";	
 	public identity;
 	public token;
 	

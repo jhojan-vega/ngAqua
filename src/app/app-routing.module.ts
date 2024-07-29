@@ -10,6 +10,7 @@ import { InvoiceComponent } from './component/invoice/invoice.component';
 import { PeriodComponent } from './component/period/period.component';
 import { PayComponent } from './component/pay/pay.component';
 import { NoveltyComponent } from './component/novelty/novelty.component';
+import { DashBoardComponent } from './component/dash-board/dash-board.component';
 
 const routes: Routes = [
   {path:'login', component: LoginComponent},
@@ -21,7 +22,8 @@ const routes: Routes = [
     {path:'period', component: PeriodComponent},
     {path:'pay', component: PayComponent},
     {path:'novelty', component: NoveltyComponent},
-    {path:'property', component: PropertyComponent}
+    {path:'property', component: PropertyComponent},
+    {path:'dashBoard', component: DashBoardComponent}
   ]},
   {path:'', redirectTo: '/login', pathMatch: 'full'}
 ];
