@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class LoginService {
-	public url="http://localhost/aqua/web";	
-	//public url="https://aqua.bugs.com.co/web";
+	//public url="http://localhost/aqua/web";	
+	public url="https://aqua.bugs.com.co/web";
 	public identity;
 	public token;
 
