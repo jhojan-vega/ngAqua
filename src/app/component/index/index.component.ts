@@ -12,6 +12,7 @@ import { Flag } from 'src/app/interfaces/flag.interface';
 export class IndexComponent implements OnInit {
 
   public nombres:string = null;
+  public acueducto:string = null;
   public flagPassword:Flag = {code: 0, status: null, message: null};
   public password:string = null;
   public passwordRepeat:string = null;
@@ -28,6 +29,7 @@ export class IndexComponent implements OnInit {
       this._userService.getData().subscribe(response => {
         localStorage.setItem("params", JSON.stringify(response));
         this.nombres = id.nombres;
+        this.acueducto = response.nombre;
       });
       //Fin
     }
