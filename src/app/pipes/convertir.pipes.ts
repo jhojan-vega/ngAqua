@@ -42,6 +42,58 @@ export class ConvertirPipe implements PipeTransform {
                 }
 				break;
 
+			case "estadoCuota":
+				switch (value) {
+					case 'P':
+						dato = "Pendiente";
+						break;
+
+					case 'A':
+						dato = "Asignada";
+						break;
+						
+					case 'V':
+						dato = "Vencida";
+						break;
+
+					case 'G':
+						dato = "Pagada";
+						break;
+
+					case 'X':
+						dato = "Cancelada";
+						break;
+
+					default:
+						dato = "No definido el estado [" + value + "]";
+						break;
+				}
+				break;
+
+			case "estadoAcuerdo":
+				switch (value) {
+					case 'A':
+						dato = "Activo";
+						break;
+
+					case 'C':
+						dato = "Cumplido";
+						break;
+					
+					case 'I':
+						dato = "Incumplido";
+						break;
+
+					case 'X':
+						dato = "Cancelado";
+						break;
+
+					default:
+						dato = "No definido el estado [" + value + "]";
+						break;
+				}
+				break;
+
 			default:
 				dato ="No definido el tipo [" + tipo + "]";
 				break;

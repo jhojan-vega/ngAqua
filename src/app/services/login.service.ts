@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class LoginService {
-	//public url="http://localhost/aqua/web";	
-	public url="https://aqua.bugs.com.co/web";
+	//public url="https://aqua.logoscreative.com.co/web";
+	public url=environment.URL_API;
 	public identity;
 	public token;
 
@@ -22,12 +23,20 @@ export class LoginService {
 		return this._http.post<any>(this.url+"/login", params, {headers: headers});
 	}
 
+	/** [Traer datos de cualquier entidad] **/
 	multiTask(datos): Observable<any>{
 		let json = JSON.stringify(datos);
 		let params = "json="+json+"&hash="+this.getToken();
 		let headers = new HttpHeaders({'Content-Type':'application/x-www-form-urlencoded'});
 
 		return this._http.post<any>(this.url+"/multiTask", params, {headers: headers});
+	}
+	//** [Actualizar Contraseña] **/
+	updatePassword(password:string): Observable<any>{
+		let params = "pwd="+password+"&hash="+this.getToken();
+		let headers = new HttpHeaders({'Content-Type':'application/x-www-form-urlencoded'});
+
+		return this._http.post<any>(this.url+"/updatePassword", params, {headers: headers});
 	}
 
 	getIdentity(){

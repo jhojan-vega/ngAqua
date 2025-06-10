@@ -33,7 +33,8 @@ export class PropertyComponent implements OnInit {
   public entidades:any = [
 		{
 			"entidad":"Propietario", 
-			"campos":["id", "tipoidentificacion", "numero", "nombres", "apellidos"]
+			"campos":["id", "tipoidentificacion", "numero", "nombres", "apellidos"],
+      "estado":1
 		}, 
 		{
 			"entidad":"Tipo", 

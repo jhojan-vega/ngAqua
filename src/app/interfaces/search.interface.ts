@@ -6,7 +6,11 @@ export interface Search{
     'apellidos'?: string,
 	'direccion'?: string,
     'periodo'?: string,
+    'anio'?: number,
+    'mes'?: number,
+    'valor'?: number,
     'valorfactura'?: number,
     'ultimafactura'?: number,
-    'valorpagado'?: number
+    'valorpagado'?: number,
+    'estado'?: string,
 }

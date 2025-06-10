@@ -1,0 +1,173 @@
+<h5><i class="bi bi-person-badge"></i> Listado de Usuarios</h5>
+<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+  <button class="btn btn-primary" type="button" (click)="reset()" data-bs-toggle="modal" data-bs-target="#createModal">
+    <i class="bi bi-plus-circle"></i> Crear Usuario
+  </button>
+</div>
+<br>
+
+<!-- FLAGS -->
+<div *ngIf="flagUser.code == 1" class="alert alert-success" role="alert">
+  <strong><span class="spinner-border spinner-border-sm"></span> {{ flagUser.message }}</strong> Espere un momento por favor ...
+</div>
+<div *ngIf="flagUser.code == 2" class="alert alert-danger" role="alert">
+  <strong>Error:</strong> {{ flagUser.message }}
+</div>
+<div *ngIf="flagUser.code == 3" class="alert alert-info" role="alert">
+  <strong>Información:</strong> {{ flagUser.message }}
+</div>
+
+<!-- TABLA -->
+<table *ngIf="showUser" class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Documento</th>
+      <th>Nombres</th>
+      <th>Teléfono</th>
+      <th>Correo</th>
+      <th>Rol</th>
+      <th>Tareas</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let u of user; let i = index">
+      <th>{{ i + 1 }}</th>
+      <td>
+        <button (click)="onDelete(u.id)" class="btn btn-danger btn-custom-sm" type="button"><i class="bi bi-trash3"></i></button>
+        {{ u.tipoIdentificacion }} {{ u.numero }}
+      </td>
+      <td>{{ u.nombres }} {{ u.apellidos }}</td>
+      <td>{{ u.telefono }}</td>
+      <td>{{ u.correo }}</td>
+      <td>
+        <i *ngIf="u.estado == '1'" class="bi bi-check2-square text-success" title="Usuario Activo" style="cursor: pointer;"></i> 
+        <i *ngIf="u.estado == '0'" class="bi bi-x-square text-danger" title="Usuario Suspendido" style="cursor: pointer;"></i> 
+        {{ getRoleName(u.role) }}</td>
+      <td>
+        <button (click)="onEdit(u, i)" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#createModal">
+          Editar
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- MODAL -->
+<div #createModal class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <form (ngSubmit)="onSubmit()" #formRegister="ngForm" class="modal-content">
+      <div class="modal-header">
+        <h1 *ngIf="!edit" class="modal-title fs-5"><i class="bi bi-person-fill-add"></i> Registrar Usuario</h1>
+        <h1 *ngIf="edit" class="modal-title fs-5"><i class="bi bi-person-fill-up"></i> Modificar Usuario</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+
+      <div class="modal-body row">
+
+        <!-- Tipo identificación (solo creación) -->
+        <div *ngIf="!edit" class="form-group row mb-3 col-md-6">
+          <label class="col-md-4 col-form-label">Tipo Identificación</label>
+          <div class="col-md-8">
+            <select class="form-select" name="tipoIdentificacion" [(ngModel)]="newUser.tipoIdentificacion" required #tipoIdentificacion="ngModel" [ngClass]="{'is-invalid': tipoIdentificacion.value == ''}">
+              <option value="">Seleccione una opción</option>
+              <option value="CC">Cédula</option> 
+              <option value="TI">Tarjeta de Identidad</option>
+              <option value="CE">Cédula Extranjería</option>
+              <option value="PS">Pasaporte</option>
+            </select> 
+            <span class="invalid-feedback" *ngIf="tipoIdentificacion.value == ''">No puedes dejar el campo sin selección</span>
+          </div>
+        </div>
+
+        <!-- Número de documento (solo creación) -->
+        <div class="form-group row mb-3 col-md-6">
+          <label class="col-md-4 col-form-label">Número</label>
+          <div class="col-md-8">
+            <input [disabled]="edit" class="form-control" type="number" name="numero" [(ngModel)]="newUser.numero" placeholder="Ingresa el Número" required #numero="ngModel" [ngClass]="{ 'is-invalid': numero.errors?.required }">
+            <span class="invalid-feedback" *ngIf="numero.errors?.required">El número es obligatorio</span>
+          </div>
+        </div>
+
+        <!-- Nombres -->
+        <div class="form-group row mb-3 col-md-6">
+          <label class="col-md-4 col-form-label">Nombres</label>
+          <div class="col-md-8">
+            <input class="form-control" type="text" name="nombres" [(ngModel)]="newUser.nombres" placeholder="Ingresa los nombres" required #nombres="ngModel" [ngClass]="{ 'is-invalid': nombres.errors?.required }">
+            <span class="invalid-feedback" *ngIf="nombres.errors?.required">Los nombres son obligatorios</span>
+          </div>
+        </div>
+
+        <!-- Apellidos -->
+        <div class="form-group row mb-3 col-md-6">
+          <label class="col-md-4 col-form-label">Apellidos</label>
+          <div class="col-md-8">
+            <input class="form-control" type="text" name="apellidos" [(ngModel)]="newUser.apellidos" placeholder="Ingresa los apellidos" required #apellidos="ngModel" [ngClass]="{ 'is-invalid': apellidos.errors?.required }">
+            <span class="invalid-feedback" *ngIf="apellidos.errors?.required">Los apellidos son obligatorios</span>
+          </div>
+        </div>
+
+        <!-- Teléfono -->
+        <div class="form-group row mb-3 col-md-6">
+          <label class="col-md-4 col-form-label">Teléfono</label>
+          <div class="col-md-8">
+            <input class="form-control" type="text" name="telefono" [(ngModel)]="newUser.telefono" required #telefono="ngModel" placeholder="Ingresa el teléfono" [ngClass]="{ 'is-invalid': telefono.errors?.required }">
+            <span class="invalid-feedback" *ngIf="telefono.errors?.required">El teléfono es obligatorio</span>
+          </div>
+        </div>
+
+        <!-- Correo electrónico -->
+        <div class="form-group row mb-3 col-md-6">
+          <label class="col-md-4 col-form-label">Correo electrónico</label>
+          <div class="col-md-8">
+            <input class="form-control" type="email" name="correo" [(ngModel)]="newUser.correo" required pattern="[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,5}" #correo="ngModel" placeholder="Ingresa el correo" [ngClass]="{ 'is-invalid': correo.errors?.required || !correo.valid }">
+            <span class="invalid-feedback" *ngIf="correo.errors?.required">El correo electrónico es obligatorio</span>
+            <span class="invalid-feedback" *ngIf="!correo.valid && correo.touched">El formato del correo es incorrecto</span>
+          </div>
+        </div>
+
+        <!-- Rol -->
+        <div class="form-group row mb-3 col-md-6">
+          <label class="col-md-4 col-form-label">Rol</label>
+          <div class="col-md-8">
+            <select class="form-select" name="role" [(ngModel)]="newUser.role.id" required>
+              <option value="1">Administrador</option>
+              <option value="2">Facturador</option>
+              <option value="3">Revisor</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Estado (solo en edición) -->
+        <div *ngIf="edit" class="form-group row mb-3 col-md-6">
+          <label class="col-md-4 col-form-label">Estado</label>
+          <div class="col-md-8">
+            <select class="form-select" name="estado" [(ngModel)]="newUser.estado">
+              <option value="1">Activo</option>
+              <option value="0">Inactivo</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- FLAGS REGISTRO -->
+        <div class="container">
+          <div *ngIf="flagRegister.code == 1" class="alert alert-success" role="alert">
+            <strong><span class="spinner-border spinner-border-sm"></span> {{ flagRegister.message }}</strong>
+          </div>
+          <div *ngIf="flagRegister.code == 2" class="alert alert-danger" role="alert">
+            <strong>Alerta:</strong> {{ flagRegister.message }}
+          </div>
+          <div *ngIf="flagRegister.code == 3" class="alert alert-info" role="alert">
+            <strong>Información: </strong> {{ flagRegister.message }}
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button *ngIf="!edit" [disabled]="!formRegister.valid" type="submit" class="btn btn-primary">Registrar</button>
+        <button *ngIf="edit" [disabled]="!formRegister.valid" type="submit" class="btn btn-primary">Modificar</button>
+      </div>
+    </form>
+  </div>
+</div>

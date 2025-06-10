@@ -16,9 +16,20 @@ import { PeriodComponent } from './component/period/period.component';
 import { PayComponent } from './component/pay/pay.component';
 import { NoveltyComponent } from './component/novelty/novelty.component';
 import { DashBoardComponent } from './component/dash-board/dash-board.component';
+import { UserComponent } from './component/user/user.component';
+import { ReportsComponent } from './component/reports/reports.component';
+import { AgreementComponent } from './component/agreement/agreement.component';
 
+// Componentes de Facturador
+import { BillerComponent } from './component/biller/biller.component';
+
+// Componentes de Auditor
+import { AuditorComponent } from './component/auditor/auditor.component';
+
+// Servicios
 import { LoginService } from './services/login.service';
 import { UserService } from './services/user.service';
+import { ReportService } from './services/report.service';
 
 import { ConvertirPipe } from './pipes/convertir.pipes';
 
@@ -46,7 +57,12 @@ registerLocaleData(localeEs, 'es-CO');
     PayComponent,
     NoveltyComponent,
     ConvertirPipe,
-    DashBoardComponent
+    DashBoardComponent,
+    UserComponent,
+    ReportsComponent,
+    BillerComponent,
+    AuditorComponent,
+    AgreementComponent
   ],
   imports: [
     BrowserModule,
@@ -60,6 +76,7 @@ registerLocaleData(localeEs, 'es-CO');
   providers: [
     LoginService,
     UserService,
+    ReportService,
     { provide: LOCALE_ID, useValue: 'es-CO' }
   ],
   bootstrap: [AppComponent]

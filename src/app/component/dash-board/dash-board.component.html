@@ -1,14 +1,26 @@
-<h4 class="text-center"><i class="bi bi-easel2"></i> giPanel de Información</h4>
+<h4 class="text-center"><i class="bi bi-easel2"></i> Panel de Información</h4>
 <hr>
-<div class="container text-center">
+<!-- ** [ FLAGS ] ** -->
+<div *ngIf="flagDash.code == 1" class="alert alert-success" role="alert">
+  <strong><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> {{ flagDash.message }}</strong> Espere un momento por favor ...
+</div>
+<div *ngIf="flagDash.code == 2" class="alert alert-danger" role="alert">
+  <strong>Error:</strong> {{ flagDash.message }}
+</div>
+<div *ngIf="flagDash.code == 3" class="alert alert-info" role="alert">
+  <strong>Información: </strong> {{ flagDash.message }}
+</div>
+<!-- ** [ END FLAGS ] ** -->
+
+<div *ngIf="showDash" class="container text-center">
   <div class="row justify-content-md-center">
-    <div class="col-md-auto">
-      <h5>Usuarios Acueducto</h5>
+    <div class="col-md-auto mb-3">
+      <h5>Inmuebles Acueducto</h5>
       <hr>
       <ngx-charts-bar-vertical
         [view]="view"
         [scheme]="colorScheme"
-        [results]="single"
+        [results]="single1"
         [gradient]="gradient"
         [xAxis]="showXAxis"
         [yAxis]="showYAxis"
@@ -20,13 +32,14 @@
         (select)="onSelect($event)">
       </ngx-charts-bar-vertical>
     </div>
-    <div class="col-md-auto">
-      <h5>Recaudo últimos 6 meses</h5>
+
+    <div class="col-md-auto mb-3">
+      <h5>Recaudo últimos 3 meses</h5>
       <hr>
       <ngx-charts-bar-vertical-2d
         [view]="view1"
         [scheme]="colorScheme1"
-        [results]="multi"
+        [results]="multi1"
         [gradient]="gradient1"
         [xAxis]="showXAxis1"
         [yAxis]="showYAxis1"
@@ -36,11 +49,53 @@
         [xAxisLabel]="xAxisLabel1"
         [yAxisLabel]="yAxisLabel1"
         [legendTitle]="legendTitle1"
-        [yScaleMax]="yScaleMax"
+        [yScaleMax]="yScaleMax1"
         (select)="onSelect($event)"
         (activate)="onActivate($event)"
         (deactivate)="onDeactivate($event)">
       </ngx-charts-bar-vertical-2d>
+    </div>
+
+    <div class="col-md-auto mb-3">
+      <h5>Facturas Generadas Vs. Pagadas últimos 3 meses</h5>
+      <hr>
+      <ngx-charts-bar-vertical-2d
+        [view]="view2"
+        [scheme]="colorScheme1"
+        [results]="multi2"
+        [gradient]="gradient2"
+        [xAxis]="showXAxis2"
+        [yAxis]="showYAxis2"
+        [legend]="showLegend2"
+        [showXAxisLabel]="showXAxisLabel2"
+        [showYAxisLabel]="showYAxisLabel2"
+        [xAxisLabel]="xAxisLabel2"
+        [yAxisLabel]="yAxisLabel2"
+        [legendTitle]="legendTitle2"
+        [yScaleMax]="yScaleMax2"
+        (select)="onSelect($event)"
+        (activate)="onActivate($event)"
+        (deactivate)="onDeactivate($event)">
+      </ngx-charts-bar-vertical-2d>
+    </div>
+
+    <div class="col-md-auto mb-3">
+      <h5>Usuarios por tipo de inmueble</h5>
+      <hr>
+      <ngx-charts-pie-chart
+        [view]="view"
+        [scheme]="colorScheme1"
+        [results]="single2"
+        [gradient]="gradient4"
+        [legend]="showLegend4"
+        [legendPosition]="legendPosition4"
+        [labels]="showLabels4"
+        [doughnut]="isDoughnut4"
+        (select)="onSelect($event)"
+        (activate)="onActivate($event)"
+        (deactivate)="onDeactivate($event)"
+        >
+      </ngx-charts-pie-chart>
     </div>
   </div>
 </div>

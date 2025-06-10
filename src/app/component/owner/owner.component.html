@@ -23,9 +23,10 @@
       <th scope="col">Documento</th>
       <th scope="col">Nombres</th>
       <th scope="col">Apellidos</th>
-      <th scope="col">Teléfono</th>
       <th scope="col">Correo</th>
-      <th scope="col">Tareas</th>
+      <th scope="col">Teléfono</th>
+      <th scope="col">Estado</th>
+      <th class="text-center" scope="col">Tareas</th>
     </tr>
   </thead>
   <tbody>
@@ -34,8 +35,18 @@
       <td>{{subjet.tipoidentificacion}} {{subjet.numero}}</td>
       <td>{{subjet.nombres}}</td>
       <td>{{subjet.apellidos}}</td>
-      <td>{{subjet.telefono}}</td>
-      <td>{{subjet.correo}}</td>
+      <td>
+        <span *ngIf="subjet.correo!='NULL'">{{subjet.correo}}</span>
+        <i *ngIf="subjet.correo=='NULL'" class="bi bi-envelope-at text-secondary opacity-50"> Sin correo</i>
+      </td>
+      <td>
+        <span *ngIf="subjet.telefono!='NULL'">{{subjet.telefono}}</span>
+        <i *ngIf="subjet.telefono=='NULL'" class="bi bi-phone-flip text-secondary opacity-50"> Sin teléfono</i>
+      </td>
+      <td class="text-center">
+        <i *ngIf="subjet.estado == '1'" class="bi bi-check2-square text-success" title="Propietario Activo" style="cursor: pointer;"></i> 
+        <i *ngIf="subjet.estado == '0'" class="bi bi-x-square text-danger" title="Propietario Suspendido" style="cursor: pointer;"></i> 
+      </td>
       <td><button (click)="onEdit(owner[i], i)" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#createModal">Editar</button></td>
     </tr>
   </tbody>
@@ -72,12 +83,12 @@
               <span class="invalid-feedback" *ngIf="tipoidentificacion.value == ''">No puedes dejar el campo sin selección</span>
             </div>
           </div>
-
+          <!-- Linea 80: | [disabled]="edit" | Ingresar para evitar modificar el número de cédula -->
           <div class="form-group row mb-3 col-md-6">
             <label class="col-md-4 col-form-label">Número</label>
             <div class="col-md-8">
               <input class="form-control"
-              [disabled]="edit"
+              
               type="number"
               name="numero"
               [(ngModel)]="newOwner.numero"
@@ -130,7 +141,7 @@
               name="telefono"
               [(ngModel)]="newOwner.telefono"
               placeholder="Ingresa un teléfono o celular"
-              required
+              
               #telefono="ngModel"
               [ngClass]="{ 'is-invalid': telefono.errors?.required }">
                 <span class="invalid-feedback" *ngIf="telefono.errors?.required">El teléfono / celular es obligatorio</span>
@@ -145,7 +156,7 @@
               name="correo"
               [(ngModel)]="newOwner.correo"
               placeholder="Ingresa tu correo electrónico"
-              required
+              
               pattern="[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,5}"
               #correo="ngModel"
               [ngClass]="{'is-invalid': correo.errors?.required || !correo.valid }" v>
@@ -171,6 +182,8 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button *ngIf="edit && active" type="button" (click)="onActive(0)" class="btn btn-danger"><i class="bi bi-exclamation-triangle"></i> Suspender</button>
+          <button *ngIf="edit && !active" type="button" (click)="onActive(1)" class="btn btn-success"><i class="bi bi-check2-square"></i> Activar</button>
           <button *ngIf="!edit" [disabled]="!formRegister.valid" type="submit" class="btn btn-primary">Registrar</button>
           <button *ngIf="edit" [disabled]="!formRegister.valid" type="submit" class="btn btn-primary">Modificar</button>
         </div>

@@ -177,7 +177,7 @@ export class NoveltyComponent implements OnInit {
       this.novelty = this.oldNovelty;
       const [mes, anio] = item.split('|');
       this.novelty = this.novelty.filter(novelties => novelties.mes == mes && novelties.anio == anio);
-      console.log(this.oldNovelty);
+      //console.log(this.oldNovelty);
     }
   }
 }

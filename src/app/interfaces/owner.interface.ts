@@ -6,5 +6,5 @@ export interface Owner{
 	'apellidos'?: string,
 	'telefono'?: string,
 	'correo'?: string,
-	'estado'?: string
+	'estado'?: number
 }

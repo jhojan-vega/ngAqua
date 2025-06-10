@@ -3,8 +3,6 @@ import { UserService } from 'src/app/services/user.service';
 import { Flag } from 'src/app/interfaces/flag.interface';
 import { Search } from 'src/app/interfaces/search.interface';
 
-declare var $: any;
-
 @Component({
   selector: 'app-pay',
   templateUrl: './pay.component.html'
@@ -19,7 +17,7 @@ export class PayComponent implements OnInit {
     }
   }
 
-  public find:any = {value:'', findInvoice: true};
+  public find:any = {value:'', findInvoice: false, type: 'pay'};
   public pay:any = {value:'', owner: '', address: '', invoice: '', lastInvoice: ''};
   public flagSearch:Flag = {code: 0, status: null, message: null};
 
@@ -45,7 +43,7 @@ export class PayComponent implements OnInit {
     this._user.payInvoice(this.pay).subscribe(
       response => {
         this.register = response;
-        console.log(response);
+        //console.log(response);
         if(this.register.status == "error"){
           this.flagSearch.code = 2; //status = error
           this.flagSearch.message = this.register.msj;
@@ -150,7 +148,7 @@ export class PayComponent implements OnInit {
   reset(){
     this.showData = false;
     this.pay = {};
-    this.find = {value:'', findInvoice: this.find.findInvoice};
+    this.find = {value:'', findInvoice: this.find.findInvoice, type: this.find.type};
     this.onFocus();
   }
 

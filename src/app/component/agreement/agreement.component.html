@@ -1,0 +1,311 @@
+<div class="row mb-2">  
+  <h5 class="col-md-6"><i class="bi bi-cash-coin"></i> Acuerdos de Pago</h5>
+  <div class="col-md-6 gap-2 d-md-flex justify-content-md-end">
+    <button [disabled]="showList" class="btn btn-success" type="button" (click)="ngOnInit()"><i class="bi bi-file-earmark-text"></i> Ver Acuerdos</button>
+    <button class="btn btn-secondary" type="reset" (click)="reset()"><i class="bi bi-eraser-fill"></i> Borrar</button>
+  </div>
+</div>
+<!-- ** [ SEARCH PROPERTY ] ** -->
+<div class="row">     
+  <!-- ** [ SEARCH ] ** -->
+  <div class="col-sm-4 mb-3">
+    <h6 class="mb-3"><i class="bi bi-search" style="color: #666666;"></i> Buscar</h6>
+    <form #formSearch="ngForm" (submit)="onSubmit()">
+      <div class="row">
+        <div class="form-group row col-md-10">
+          <label class="col-md-2 col-form-label">Valor</label>
+          <div class="col-md-10">
+            <input class="form-control"
+            type="text"
+            name="buscar"
+            #buscar
+            [(ngModel)]="find.value"
+            placeholder="Código / Cedula / Nombres"
+            required
+            [disabled]="showData"
+            #buscar="ngModel"
+            [ngClass]="{ 'is-invalid': buscar.errors?.required && buscar.touched}">
+              <span class="invalid-feedback" *ngIf="buscar.errors?.required">El valor es obligatorio</span>
+          </div>
+        </div>
+  
+        <div class="form-group col-md-2">
+          <button [disabled]="!formSearch.valid" class="btn btn-primary" type="submit">Buscar</button>
+        </div>
+      </div>
+
+      <div class="form-group col-md-12 row">
+        <div class="col-md-2"></div>
+        <div class="form-check col-md-10">
+          <input class="form-check-input" type="checkbox" (change)="onChangeCheck(findInvoice.checked)" value="" id="flexCheckChecked" #findInvoice>
+          <label class="form-check-label" for="flexCheckChecked">
+            Buscar por No. de Factura
+          </label>
+        </div>
+      </div>
+    </form> 
+  </div>
+  <!-- ** [ END SEARCH ] ** -->
+  <!-- ** [ FLAGS ] ** -->
+  <div *ngIf="flagSearch.code == 1" class="alert alert-success" role="alert">
+    <strong><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> {{ flagSearch.message }}</strong> Espere un momento por favor ...
+  </div>
+  <div *ngIf="flagSearch.code == 2" class="alert alert-danger" role="alert">
+    <strong>Error:</strong> {{ flagSearch.message }}
+  </div>
+  <div *ngIf="flagSearch.code == 3" class="alert alert-info" role="alert">
+    <strong>Información: </strong> {{ flagSearch.message }}
+  </div>
+  <!-- ** [ END FLAGS ] ** -->
+  <!-- ** [ TABLE LIST AGREEMENTS ] ** -->
+  <div class="col-sm-12 mb-1">
+    <table *ngIf="showList" class="table table-striped">
+      <tr>
+        <!-- Cada th solo define el campo; icono se resuelve en la función iconFor() -->
+        <th (click)="onSortCollection('numero')" class="pointer sortable">
+          Documento <i [ngClass]="iconFor('numero')"></i>
+        </th>
+        <th (click)="onSortCollection('propietario')" class="pointer sortable">
+          Propietario <i [ngClass]="iconFor('propietario')"></i>
+        </th>
+        <th (click)="onSortCollection('direccion')" class="pointer sortable">
+          Dirección <i [ngClass]="iconFor('direccion')"></i>
+        </th>
+        <th (click)="onSortCollection('id')" class="pointer sortable text-center">
+          Periodo <i [ngClass]="iconFor('id')"></i>
+        </th>
+        <th (click)="onSortCollection('cuotas')" class="pointer sortable text-center">
+          Cuotas <i [ngClass]="iconFor('cuotas')"></i>
+        </th>
+        <th (click)="onSortCollection('total')" class="pointer sortable text-end">
+          Total <i [ngClass]="iconFor('total')"></i>
+        </th>
+        <th (click)="onSortCollection('valorpendiente')" class="pointer sortable text-end">
+          Pendiente <i [ngClass]="iconFor('valorpendiente')"></i>
+        </th>
+        <th (click)="onSortCollection('estado')" class="pointer sorteable text-center">
+          Estado <i [ngClass]="iconFor('estado')"></i>
+        </th>
+      </tr>
+      <tbody>
+        <tr *ngFor="let body of listAgreement">
+          <td>{{body.tipoidentificacion}} {{body.numero}}</td>
+          <td>{{body.nombres}} {{body.apellidos}}</td>
+          <td>{{body.direccion}}</td>
+          <td>{{body.periodo}} [ <i class="bi bi-receipt"></i> No. {{body.id}} ]</td>
+          <td class="text-center">{{body.cuotas}}</td>
+          <td class="text-center">{{body.total | currency: 'COP'}}</td>
+          <td class="text-center">{{body.valorpendiente | currency: 'COP'}}</td>
+          <td class="text-center">
+            <span class="info-item ms-3">
+              <!-- color varía según estado -->
+              <span
+                class="badge pointer"  
+                (click)="onAgreement(body, 'view')"                    
+                [ngClass]="{
+                  'bg-primary'  : body.estado === 'A',
+                  'bg-danger'   : body.estado === 'X',
+                  'bg-success'  : body.estado === 'C',
+                  'bg-defeated' : body.estado === 'I'
+                }">
+                {{ body.estado | convertir:'estadoAcuerdo' }}
+              </span>
+            </span>
+          <td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- ** [ END TABLE LIST AGREEMENTS] ** -->
+  <!-- ** [ TABLE ] ** -->
+  <div class="col-sm-12 mb-1">
+    <table *ngIf="showData" class="table table-striped">
+      <thead>
+        <tr>
+          <th>Documento</th>
+          <th>Usuario</th>
+          <th>Inmueble</th>
+          <th>Factura</th>
+          <th class="text-center">Valor</th>
+          <th class="text-center">Pagado</th>
+          <th class="text-center">Acuerdos</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let body of search, let isFirst = first">
+          <td>
+            {{body.tipoidentificacion}} {{body.numero}}
+          </td>
+          <td>{{body.nombres}} {{body.apellidos}}</td>
+          <td>{{body.direccion}}</td>
+          <td>{{body.periodo}} [ <i class="bi bi-receipt"></i> No. {{body.id}} ]</td>
+          <td class="text-center">{{body.valorfactura | currency: 'COP'}}</td>
+          <td class="text-center">{{body.valorpagado | currency: 'COP'}}</td>
+          <td class="text-center">
+            <button *ngIf="body.estado == null && body.acuerdoInmueble != 'A' && body.id == body.ultimafactura && (body.valorfactura - body.valorpagado) > 0" class="btn btn-primary btn-custom-sm ms-2" type="button" (click)="onAgreement(body, 'agreement')">
+              <i class="bi bi-file-earmark-text"></i> Generar
+            </button>
+            <button *ngIf="body.estado != null" class="btn btn-success btn-custom-sm ms-2" type="button" (click)="onAgreement(body, 'view')">
+              <i class="bi bi-journal-check"></i> Ver Acuerdo
+            </button>
+            <i *ngIf="body.id == body.ultimafactura && (+body.valorpagado) >= (+body.valorfactura)" class="bi bi-journal-check pointer" title="Pagos al día"></i>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- ** [ END TABLE ] ** -->
+</div>
+
+<!-- ** [ AGREEMENT PROPERTY ] ** -->
+<hr>
+<!-- ** [ FLAGS ] ** -->
+<div *ngIf="flagAgreement.code == 1" class="alert alert-success" role="alert">
+  <strong><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> {{ flagAgreement.message }}</strong> Espere un momento por favor ...
+</div>
+<div *ngIf="flagAgreement.code == 2" class="alert alert-danger" role="alert">
+  <strong>Error:</strong> {{ flagAgreement.message }}
+</div>
+<div *ngIf="flagAgreement.code == 3" class="alert alert-info" role="alert">
+  <strong>Información: </strong> {{ flagAgreement.message }}
+</div>
+<!-- ** [ END FLAGS ] ** -->
+<div id="panelAgreement" *ngIf="showAgreement" class="row">
+  <h5><i class="bi bi-file-earmark-text"></i> Acuerdo de Pago</h5>
+  <hr>  
+  <div class="info-bar d-flex flex-wrap align-items-center gap-3 p-2 rounded">
+  
+    <span class="info-item d-flex align-items-center">
+      <i class="bi bi-person-vcard-fill me-1"></i>
+      <span id="doc">{{ agreement.id }}</span>
+    </span>
+  
+    <span class="info-sep d-none d-md-block"></span>
+  
+    <span class="info-item d-flex align-items-center">
+      <i class="bi bi-person-fill me-1"></i>
+      <span id="owner">{{ agreement.owner }}</span>
+    </span>
+  
+    <span class="info-sep d-none d-lg-block"></span>
+  
+    <span class="info-item d-flex align-items-center">
+      <i class="bi bi-geo-alt-fill me-1"></i>
+      <span id="addr">{{ agreement.address }}</span>
+    </span>
+  
+    <span class="info-sep d-none d-xl-block"></span>
+  
+    <span class="info-item d-flex align-items-center">
+      <i class="bi bi-receipt me-1"></i>
+      Fact. #<span id="inv">{{ agreement.invoice }}</span>
+      <small class="text-muted ms-2">(Valor {{ agreement.value | currency:'COP' }})</small>
+    </span>
+  
+    <span class="info-item d-flex align-items-center ms-md-auto">
+      <i class="bi bi-wallet-fill me-1"></i>
+      <span id="val" class="fw-semibold text-body">{{ agreement.value - agreement.pay | currency:'COP' }}</span>
+      <small class="text-muted ms-2">Pago: {{ agreement.pay | currency:'COP' }}</small>
+    </span>
+  
+    <span class="info-item ms-3">
+      <!-- color varía según estado -->
+      <span *ngIf="agreement.agreement"
+        class="badge"                       
+        [ngClass]="{
+          'bg-primary'  : agreement.agreement === 'A',
+          'bg-danger'   : agreement.agreement === 'X',
+          'bg-success'  : agreement.agreement === 'C',
+          'bg-defeated' : agreement.agreement === 'I'
+        }">
+        {{ agreement.agreement | convertir:'estadoAcuerdo' }}
+      </span>
+      <span *ngIf="agreement.agreement == null" id="estado" class="badge badge-estado bg-secondary">Sin Acuerdo</span>
+    </span>
+
+    <!-- selector Nº cuotas -->
+    <div class="d-flex align-items-center">
+      <label for="num-cuotas" class="me-2 mb-0 fw-bold">Cuotas</label>
+      <input type="number"
+        [(ngModel)]="numCuotas"
+        (change)="generatePlan()" 
+        id="num-cuotas"
+        [disabled]="viewAgreement"
+        class="form-control form-control-sm"
+        style="width:5rem"
+        min="1" max="36" step="1" value="4">
+    </div>
+  
+  </div>
+  <!-- ** [ END INFO BAR ] ** -->
+  <!-- ** [ TABLE OF INSTALLMENTS ] ** --> 
+  <table class="table table-sm align-middle mt-3">
+    <thead class="table-light">
+      <tr>
+        <th class="text-center"># Cuota</th>
+        <th class="text-center">Mes/Año</th>
+        <th class="text-end">
+          Valor 
+          <small class="text-muted ms-2 small pointer" title="Valor cuota sin ajuste">({{+(acuerdoPago.total / numCuotas).toFixed(2) | currency:'COP'}})</small>
+        </th>
+        <th class="text-end">Valor Factura <i class="bi bi-exclamation-triangle-fill pointer text-warning" title="Valor sin novedades, ni cambio de inmueble"></i></th>
+        <th class="text-end">Valor Pagado</th>
+        <th class="text-center">Estado</th>
+        <th class="text-center">Información</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let cuota of acuerdoPago.plan">
+        <td class="text-center">{{ cuota.cuota }}</td>
+        <td class="text-center">{{ cuota.mes }}/{{ cuota.anio }}</td>
+        <td class="text-end">{{ cuota.valor | currency:'COP' }}</td>
+        <td class="text-end">{{ (+valorPago + +cuota.valor) | currency:'COP' }}</td>
+        <td class="text-end">{{ +cuota.valorpagado | currency:'COP' }}</td>
+        <td class="text-center">
+          <span class="badge" [ngClass]="{'bg-success': cuota.estado === 'G', 'bg-info': cuota.estado === 'P', 'bg-warning': cuota.estado === 'A', 'bg-defeated': cuota.estado === 'V', 'bg-danger': cuota.estado === 'X'}">
+            {{ cuota.estado | convertir:'estadoCuota' }}
+          </span>
+        </td>
+        <td class="text-center">
+          <span *ngIf="cuota.estado != 'X' && cuota.factura != null" class="badge bg-secondary pointer" title="Factura asignada para pago de cuota">
+            <i class="bi bi-receipt"></i> {{ cuota.factura.id }}
+          </span>
+          <!-- Caso contrario -->
+          <span *ngIf="cuota.estado != 'X' && cuota.factura == null" class="badge bg-secondary pointer" title="No hay factura asignada para pago de cuota">
+            <i class="bi bi-receipt"></i> Sin Factura
+          </span>
+        </td>
+    </tbody>
+  </table>
+  <!-- ** [ END TABLE OF INSTALLMENTS ] ** -->
+  <div class="row">
+    <div class="col-md-4 mt-2">
+      <div class="alert d-flex justify-content-between align-items-center mb-0 py-2" [ngClass]="{'alert-warning': acuerdoPago.valorpendiente > 0, 'alert-success': acuerdoPago.valorpendiente <= 0}">
+        <div>
+          <i class="bi bi-wallet2 me-1"></i>
+          <strong>Saldo pendiente:</strong>
+        </div>
+        <span class="fw-semibold">
+          {{ acuerdoPago.valorpendiente | currency:'COP':'symbol':'1.0-0' }}
+        </span>
+      </div>
+    </div>
+    <div class="col-md-8 d-flex justify-content-end mt-2 mb-3">
+      <button *ngIf="!viewAgreement && typeButton == 0" [disabled]="viewAgreement" class="btn btn-primary small me-1" (click)="onNewAgreement()"><i class="bi bi-journal-plus me-1"></i> Guardar Acuerdo</button>
+      <button *ngIf="viewAgreement && typeButton == 1" class="btn btn-danger small" (click)="onDeleteAgreement()"><i class="bi bi-journal-x me-1"></i> Borrar Acuerdo</button>
+      <button *ngIf="viewAgreement && typeButton == 2" class="btn btn-danger small" (click)="onCancelAgreement()"><i class="bi bi-journal-medical me-1"></i> Cancelar Acuerdo</button>
+  </div>
+</div>
+<!-- ** [ END AGREEMENT PROPERTY ] ** -->
+<!-- ** [ FLAGS ] ** -->
+
+<div *ngIf="flagNewAgreement.code == 1" class="alert alert-success" role="alert">
+  <strong><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> {{ flagNewAgreement.message }}</strong> Espere un momento por favor ...
+</div>
+<div *ngIf="flagNewAgreement.code == 2" class="alert alert-danger" role="alert">
+  <strong>Error:</strong> {{ flagNewAgreement.message }}
+</div>
+<div *ngIf="flagNewAgreement.code == 3" class="alert alert-info" role="alert">
+  <strong>Información: </strong> {{ flagNewAgreement.message }}
+</div>
+<!-- ** [ END FLAGS ] ** -->

@@ -2,11 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Period } from '../interfaces/period.interface';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class UserService {
-	//public url="http://localhost/aqua/web/user";	
-	public url="https://aqua.bugs.com.co/web/user";	
+	public urlData = "./assets/config/params.json";	
+	//public url="https://aqua.logoscreative.com.co/web/user";	
+	public url=environment.URL_API + "/user";
 	public identity;
 	public token;
 	
@@ -15,12 +17,23 @@ export class UserService {
 	constructor(private _http:HttpClient) {
 		console.log("Servicio API Rest (user) Aqua Funcionando !!!");
 	}
+	//** [Cargar datos del archivo params.json (Acueducto, logo base 64)] **/
+	getData(): Observable<any> {
+		return this._http.get<any>(this.urlData);
+	}
 	//** [Manejo de la variable bill] **/
 	setBill(value:Period){
 		this.bill = value;
 	}
 	getBill(){
 		return this.bill;
+	}
+	/** [Cargar estadisticas dashboard] **/
+	readDash(): Observable<any>{
+		let params = "hash="+this.getToken();
+		let headers = new HttpHeaders({'Content-Type':'application/x-www-form-urlencoded'});
+
+		return this._http.post<any>(this.url+"/readDash", params, {headers: headers});
 	}
 	/** [Listar Historial de Cambios] **/
 	readHistory(id:number): Observable<any>{
@@ -111,6 +124,28 @@ export class UserService {
 
 		return this._http.post<any>(this.url+"/activeProperty", params, {headers: headers});
 	}
+	//** [Listar Usuarios] **/
+	readUser(): Observable<any> {
+		let params = "hash=" + this.getToken();
+		let headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
+	
+		return this._http.post<any>(this.url + "/readUser", params, { headers: headers });
+	}
+	//** [Crear Usuarios 'C' / Editar Usuarios 'E'] **/
+	newUser(datos: any, tarea: string): Observable<any> {
+		let json = JSON.stringify(datos);
+		let params = "tarea=" + tarea + "&json=" + json + "&hash=" + this.getToken();
+		let headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
+	
+		return this._http.post<any>(this.url + "/newUser", params, { headers: headers });
+	}
+	//** [Borrar Usuarios] **//
+	deleteUser(id:string): Observable<any> {
+		let params = "id=" + id + "&hash=" + this.getToken();
+		let headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
+
+		return this._http.post<any>(this.url + "/deleteUser", params, { headers: headers });
+	}
   	//** [Listar Propietarios] **/
 	readOwner(): Observable<any>{
 		let params = "hash="+this.getToken();
@@ -125,6 +160,13 @@ export class UserService {
 		let headers = new HttpHeaders({'Content-Type':'application/x-www-form-urlencoded'});
 
 		return this._http.post<any>(this.url+"/newOwner", params, {headers: headers});
+	}
+	//** [Activar|Desactivar Propietarios] **/
+	activeOwner(status:number, id:number): Observable<any>{
+		let params = "status="+status+"&id="+id+"&hash="+this.getToken();
+		let headers = new HttpHeaders({'Content-Type':'application/x-www-form-urlencoded'});
+
+		return this._http.post<any>(this.url+"/activeOwner", params, {headers: headers});
 	}
 	//** [Listar Periodos] **/
 	readPeriod(): Observable<any>{
@@ -147,6 +189,46 @@ export class UserService {
 		let headers = new HttpHeaders({'Content-Type':'application/x-www-form-urlencoded'});
 
 		return this._http.post<any>(this.url+"/deletePeriod", params, {headers: headers});
+	}
+
+	//** [Buscar Acuerdos] **/
+	findAgreement(invoice:number): Observable<any>{
+		let params = "invoice="+invoice+"&hash="+this.getToken();
+		let headers = new HttpHeaders({'Content-Type':'application/x-www-form-urlencoded'});
+		
+		return this._http.post<any>(this.url+"/findAgreement", params, {headers: headers});
+	}
+
+	//** [Listar Acuerdos] **/
+	readAgreement(): Observable<any>{
+		let params = "hash="+this.getToken();
+		let headers = new HttpHeaders({'Content-Type':'application/x-www-form-urlencoded'});
+		return this._http.post<any>(this.url+"/readAgreement", params, {headers: headers});
+	}
+
+	//** [Crear Acuerdos] **/
+	newAgreement(datos:any): Observable<any>{
+		let json = JSON.stringify(datos);
+		let params = "json="+json+"&hash="+this.getToken();
+		let headers = new HttpHeaders({'Content-Type':'application/x-www-form-urlencoded'});
+
+		return this._http.post<any>(this.url+"/newAgreement", params, {headers: headers});
+	}
+
+	//** [Borrar Acuerdos] **/
+	deleteAgreement(id:number): Observable<any>{
+		let params = "id="+id+"&hash="+this.getToken();
+		let headers = new HttpHeaders({'Content-Type':'application/x-www-form-urlencoded'});
+
+		return this._http.post<any>(this.url+"/deleteAgreement", params, {headers: headers});
+	}
+
+	//** [Cancelar Acuerdos] **/
+	cancelAgreement(id:number): Observable<any>{
+		let params = "id="+id+"&hash="+this.getToken();
+		let headers = new HttpHeaders({'Content-Type':'application/x-www-form-urlencoded'});
+
+		return this._http.post<any>(this.url+"/cancelAgreement", params, {headers: headers});
 	}
 
 	getIdentity(){

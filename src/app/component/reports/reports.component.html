@@ -1,0 +1,351 @@
+<h5><i class="bi bi-printer-fill"></i> Generación de Reportes</h5>
+<br>
+<div class="row">
+  
+  <!-- ** [ SELECCIÓN DE REPORTES ] ** -->
+  <div class="row col-md-6 mb-4">
+    <label class="col-sm-2 col-form-label">Reportes</label>
+      <div class="col-sm-6">
+        <select class="form-select" (change)="onChangeReport($event.target.value)">
+          <option selected value="0">Seleccione un Reporte</option>
+          <option value="1">Cartera por Periodos</option>
+          <option value="2">Recaudo por Periodos</option>
+          <!--<option value="3">Relación Ingresos / Deudores</option> -->
+        </select>
+      </div>
+  </div>
+  <!-- ** [ CONTENEDOR DE REPORTES ] ** -->
+  <div class="col-md-6">
+    <!-- ** [ REPORTE DE CARTERA ] ** -->
+    <div *ngIf="report == 1">
+      <!-- ** [ FLAGS ] ** -->
+      <div *ngIf="flagPeriod.code == 1" class="alert alert-success" role="alert">
+        <strong><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> {{ flagPeriod.message }}</strong> Espere un momento por favor ...
+      </div>
+      <div *ngIf="flagPeriod.code == 2" class="alert alert-danger" role="alert">
+        <strong>Error:</strong> {{ flagPeriod.message }}
+      </div>
+      <div *ngIf="flagPeriod.code == 3" class="alert alert-info" role="alert">
+        <strong>Información: </strong> {{ flagPeriod.message }}
+      </div>
+      <!-- ** [ END FLAGS ] ** -->
+
+      <!-- FILTRO DE PERIODOS -->
+      <div *ngIf="flagPeriod.code == 0" class="row mb-4">
+        <label class="col-sm-2 col-form-label" for="periodo">Periodo</label>
+        <div class="col-sm-10">
+            <select (change)="onChangePeriod(periodo.value, 1)" class="form-select" id="periodo" #periodo>
+                <option selected value="0">Seleccione un periodo</option>
+                <option *ngFor="let item of periods" value="{{item.id}}">{{item.periodo}} - {{item.mes}}/{{item.anio}}</option>
+            </select>
+        </div>    
+      </div>
+      <!-- ** [ END FILTRO DE PERIODOS ] ** -->
+    
+    </div>
+    <!-- ** [ REPORTE DE RECAUDO ] ** -->
+    <div *ngIf="report == 2">
+      <!-- ** [ FLAGS ] ** -->
+      <div *ngIf="flagPeriod.code == 1" class="alert alert-success" role="alert">
+        <strong><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> {{ flagPeriod.message }}</strong> Espere un momento por favor ...
+      </div>
+      <div *ngIf="flagPeriod.code == 2" class="alert alert-danger" role="alert">
+        <strong>Error:</strong> {{ flagPeriod.message }}
+      </div>
+      <div *ngIf="flagPeriod.code == 3" class="alert alert-info" role="alert">
+        <strong>Información: </strong> {{ flagPeriod.message }}
+      </div>
+      <!-- ** [ END FLAGS ] ** -->
+
+      <!-- FILTRO DE PERIODOS -->
+      <div *ngIf="flagPeriod.code == 0" class="row mb-4">
+        <label class="col-sm-2 col-form-label" for="periodo">Periodo</label>
+        <div class="col-sm-10">
+            <select (change)="onChangePeriod(periodo.value, 2)" class="form-select" id="periodo" #periodo>
+                <option selected value="0">Seleccione un periodo</option>
+                <option *ngFor="let item of periods" value="{{item.id}}">{{item.periodo}} - {{item.mes}}/{{item.anio}}</option>
+            </select>
+        </div>    
+      </div>
+      <!-- ** [ END FILTRO DE PERIODOS ] ** -->
+    
+    </div>
+    <!-- ** [ REPORTE DE RELACIÓN ] ** -->
+    <div *ngIf="report==3">
+
+    </div>
+    
+  </div>
+</div>
+
+<!-- ** [ FLAGS ] ** -->
+<div *ngIf="flagReport.code == 1" class="alert alert-success" role="alert">
+  <strong><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> {{ flagReport.message }}</strong> Espere un momento por favor ...
+</div>
+<div *ngIf="flagReport.code == 2" class="alert alert-danger" role="alert">
+  <strong>Error:</strong> {{ flagReport.message }}
+</div>
+<div *ngIf="flagReport.code == 3" class="alert alert-info" role="alert">
+  <strong>Información: </strong> {{ flagReport.message }}
+</div>
+<!-- ** [ END FLAGS ] ** -->
+
+<!-- [ DATOS REPORTE DE CARTERA FLAG: showData ] -->
+<div class="mt-2" *ngIf="showData">
+  <!-- [ CONTENEDORES ] -->
+  <div class="row mb-4">
+    <!-- CONTENEDOR CARTERA -->
+    <div class="col-md-3">
+      <div class="card text-bg-primary">
+        <div class="card-body text-center">
+          <strong><i class="bi bi-coin"></i> CARTERA: $ {{ totalReceivable | number:'1.0-0' }}</strong>
+        </div>
+      </div>
+    </div>
+    <!-- CONTENEDOR NUMERO DEUDORES -->
+    <div class="col-md-3">
+      <div class="card text-bg-success">
+        <div class="card-body text-center">
+          <strong><i class="bi bi-person-slash"></i> N° DEUDORES: {{ receivable.length }}</strong>
+        </div>
+      </div>
+    </div>
+    <!-- PORCENTAJE DE RECAUDO -->
+    <div class="col-md-3">
+      <div class="card text-bg-info">
+        <div class="card-body text-center">
+          <strong><i class="bi bi-graph-up"></i> % RECAUDO: {{ percentage | number:'1.0-2' }}%</strong>
+        </div>
+      </div>
+    </div>
+    <!-- CONTENEDOR TOTAL RECAUDO -->
+    <div class="col-md-3">
+      <div class="card text-bg-warning">
+        <div class="card-body text-center">
+          <strong><i class="bi bi-cash-coin"></i> RECAUDO: $ {{ collection | number:'1.0-0' }}</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ** [ END CONTENEDORES ] ** -->
+  <div class="row">
+    <h5 class="col-md-6 mt-3"><i class="bi bi-file-earmark-text"></i> Reporte de Cartera</h5>
+    <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-end">
+      <button class="btn btn-primary" type="button" (click)="onPrintReport()"><i class="bi bi-printer"></i> Imprimir Reporte</button>
+    </div>
+  </div>
+  <!-- ** [ TABLE ] ** -->
+  <table class="table table-striped table-hover mt-3">
+    <thead class="table-dark">
+      <tr>
+        <th>#</th>
+        <th>Propietario</th>
+        <th>Inmueble</th>
+        <th>Dirección</th>
+        <th class="text-end">Cartera ($)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of receivable; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ item.nombres }}</td>
+        <td>{{ item.codigo }}</td>
+        <td>{{ item.direccion }}</td>
+        <td class="text-end">{{ item.cartera | number:'1.0-0' }}</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4" class="text-end"><strong>Total cartera</strong></td>
+        <td class="text-end"><strong>{{ totalReceivable | number:'1.0-0' }}</strong></td>
+      </tr>
+    </tfoot>
+  </table>
+  <!-- ** [ END TABLE ] ** -->
+</div>
+<!-- ** [ END REPORTE DE CARTERA ] ** -->
+
+<!-- [ DATOS REPORTE DE CARTERA FLAG: showCollection ] -->
+<div class="mt-2" *ngIf="showCollection">
+  <!-- RESUMEN RECAUDO -->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="card text-bg-primary">
+        <div class="card-body text-center">
+          <strong><i class="bi bi-cash-coin"></i> RECAUDO TOTAL: $ {{ collection | number:'1.0-0' }}</strong>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-bg-secondary">
+        <div class="card-body text-center">
+          <strong><i class="bi bi-receipt"></i> FACTURADO: $ {{ collectionFacturado | number:'1.0-0' }}</strong>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-bg-success">
+        <div class="card-body text-center">
+          <strong><i class="bi bi-graph-up-arrow"></i> % RECAUDO TOTAL: {{ collectionPercentage | number:'1.0-2' }}%</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- FIN RESUMEN RECAUDO -->
+  <!-- PORCENTAJES DETALLADOS -->
+  <div class="row mb-4">
+    <!-- PANEL CONSUMO -->
+    <div class="col-md-4">
+      <div class="card text-center">
+        <div class="card-header">
+          <strong><i class="bi bi-cash-stack"></i> CONSUMO ({{ totalConsumed/collectionFacturado*100 | number:'1.0-2' }} %)</strong>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><strong>Facturado:</strong> $ {{ totalConsumed | number:'1.0-0' }}</li>
+          <li class="list-group-item"><strong>Recaudado:</strong> $ {{ collectionConsumed | number:'1.0-0' }}</li>
+          <li class="list-group-item"><strong>% Recaudo:</strong> {{ collectionConsumed/totalConsumed*100 | number:'1.0-2' }} %</li>
+        </ul>
+        <div class="card-footer text-body-secondary">
+          <small><i class="bi bi-person-fill"></i> {{ collectionPorcentajeConsumo | number:'1.0-2' }} %</small>
+        </div>
+      </div>
+    </div>
+    <!-- PANEL CARTERA -->
+    <div class="col-md-4">
+      <div class="card text-center">
+        <div class="card-header">
+          <strong><i class="bi bi-wallet-fill"></i> CARTERA ({{ totalReceible/collectionFacturado*100 | number:'1.0-2' }} %)</strong>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><strong>Facturado:</strong> $ {{ totalReceible | number:'1.0-0' }}</li>
+          <li class="list-group-item"><strong>Recaudado:</strong> $ {{ collectionReceible | number:'1.0-0' }}</li>
+          <li class="list-group-item"><strong>% Recaudo:</strong> {{ collectionReceible/totalReceible*100 | number:'1.0-2' }} %</li>
+        </ul>
+        <div class="card-footer text-body-secondary">
+          <small><i class="bi bi-person-fill"></i> {{ collectionPorcentajeCartera | number:'1.0-2' }} %</small>
+        </div>
+      </div>
+    </div>
+    <!-- PANEL NOVEDADES -->
+    <div class="col-md-4">
+      <div class="card text-center">
+        <div class="card-header">
+          <strong><i class="bi bi-wallet"></i> NOVEDADES ({{ totalUpdates/collectionFacturado*100 | number:'1.0-2' }} %)</strong>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><strong>Facturado:</strong> $ {{ totalUpdates | number:'1.0-0' }}</li>
+          <li class="list-group-item"><strong>Recaudado:</strong> $ {{ collectionUpdates | number:'1.0-0' }}</li>
+          <li class="list-group-item"><strong>% Recaudo:</strong> {{ collectionUpdates/totalUpdates*100 | number:'1.0-2' }} %</li>
+        </ul>
+        <div class="card-footer text-body-secondary">
+          <small><i class="bi bi-person-fill"></i> {{ collectionPorcentajeNovedades | number:'1.0-2' }} %</small>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- FIN PORCENTAJES DETALLADOS -->
+  <!-- INFORMACIÓN ADICIONAL -->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="card text-bg-primary">
+        <div class="card-body text-center">
+          <strong><i class="bi bi-database-up"></i> SUPERÁVIT RECAUDO: $: {{ collection - (collectionConsumed + collectionReceible + collectionUpdates) | number:'1.0-0' }}</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- FIN INFORMACIÓN ADICIONAL -->
+  <!-- TABLA DE DATOS -->
+  <div class="row">
+    <h5 class="col-md-6 mt-3"><i class="bi bi-file-earmark-text"></i> Reporte de Recaudado</h5>
+    <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-end">
+      <button class="btn btn-primary" type="button" (click)="onPrintCollectionReport()"><i class="bi bi-printer"></i> Imprimir Reporte</button>
+    </div>
+  </div>
+  <table class="table table-striped table-hover mt-3">
+    <thead class="table-dark">
+      <tr>
+        <th (click)="onSortCollection('inmueble_id')" class="pointer">
+          #
+          <i *ngIf="sortColumn === 'inmueble_id'" class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortDirection === 'asc',
+            'bi-caret-down-fill': sortDirection === 'desc'
+          }"></i>
+        </th>
+        <th (click)="onSortCollection('propietario')" class="pointer">
+          Propietario
+          <i *ngIf="sortColumn === 'propietario'" class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortDirection === 'asc',
+            'bi-caret-down-fill': sortDirection === 'desc'
+          }"></i>
+        </th>
+        <th (click)="onSortCollection('consumo')" class="text-end pointer">
+          Consumo
+          <i *ngIf="sortColumn === 'consumo'" class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortDirection === 'asc',
+            'bi-caret-down-fill': sortDirection === 'desc'
+          }"></i>
+        </th>
+        <th (click)="onSortCollection('cartera')" class="text-end pointer">
+          Cartera
+          <i *ngIf="sortColumn === 'cartera'" class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortDirection === 'asc',
+            'bi-caret-down-fill': sortDirection === 'desc'
+          }"></i>
+        </th>
+        <th (click)="onSortCollection('novedades')" class="text-end pointer">
+          Novedades
+          <i *ngIf="sortColumn === 'novedades'" class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortDirection === 'asc',
+            'bi-caret-down-fill': sortDirection === 'desc'
+          }"></i>
+        </th>
+        <th (click)="onSortCollection('facturado')" class="text-end pointer">
+          Facturado
+          <i *ngIf="sortColumn === 'facturado'" class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortDirection === 'asc',
+            'bi-caret-down-fill': sortDirection === 'desc'
+          }"></i>
+        </th>
+        <th (click)="onSortCollection('total_pagado')" class="text-end pointer">
+          Pagado
+          <i *ngIf="sortColumn === 'total_pagado'" class="bi" [ngClass]="{
+            'bi-caret-up-fill': sortDirection === 'asc',
+            'bi-caret-down-fill': sortDirection === 'desc'
+          }"></i>
+        </th>
+        <th class="text-center">Estado</th>
+      </tr>
+    </thead>    
+    <tbody>
+      <tr *ngFor="let item of collectionData; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>[ {{ item.inmueble_id }} ] <i class="bi bi-geo-alt" title="{{ item.direccion }}" style="cursor: pointer;"></i> {{ item.propietario }}</td>
+        <td class="text-end">$ {{ item.consumo | number:'1.0-0' }}</td>
+        <td class="text-end">$ {{ item.cartera | number:'1.0-0' }}</td>
+        <td class="text-end">$ {{ item.novedades | number:'1.0-2' }}</td>
+        <td class="text-end">$ {{ item.facturado | number:'1.0-2' }}</td>
+        <td class="text-end">$ {{ item.total_pagado | number:'1.0-2' }}</td>
+        <td class="text-center">
+          <ng-container [ngSwitch]="true">
+            <i *ngSwitchCase="item.total_pagado == 0 && item.facturado != 0"
+               class="bi bi-hand-thumbs-down-fill text-danger pointer" title="Sin pago"></i>
+      
+            <i *ngSwitchCase="item.facturado == 0 && item.total_pagado == 0"
+               class="bi bi-arrow-left-right text-warning pointer" title="No debe realizar pago"></i>
+      
+            <i *ngSwitchCase="item.total_pagado == item.facturado && item.facturado != 0" 
+               class="bi bi-hand-thumbs-up-fill text-success pointer" title="Pago exacto"></i>
+      
+            <i *ngSwitchCase="item.total_pagado > item.facturado"
+               class="bi bi-arrow-up-circle-fill text-primary pointer" title="Pago mayor al facturado"></i>
+      
+            <i *ngSwitchCase="item.total_pagado < item.facturado && item.total_pagado > 0"
+               class="bi bi-arrow-down-circle-fill text-warning pointer" title="Pago parcial"></i>
+          </ng-container>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<!-- ** [ END REPORTE DE RECAUDO ] ** -->

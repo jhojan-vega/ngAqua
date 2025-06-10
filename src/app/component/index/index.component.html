@@ -3,7 +3,7 @@
   <!-- MENU PPAL -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" routerLink="dashBoard">Acueducto PUERRES</a>
+      <a class="navbar-brand" routerLink="dashBoard">Acueducto VILLAMORENO</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -24,12 +24,33 @@
               <li><a class="dropdown-item" routerLink="period">Generar Facturas</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" routerLink="novelty">Ingresar Novedades</a></li>
+              <li><a class="dropdown-item" routerLink="agreement">Acuerdo de Pago</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Administración
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" routerLink="user">Usuarios</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" routerLink="reports">Generar Reportes</a></li>
             </ul>
           </li>
         </ul>
         <ul class="navbar-nav">
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a class="nav-link" aria-current="page" href="#" (click)="onExit()"><i class="bi bi-box-arrow-left"></i> Salir</a>
+          </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              {{nombres}} <i class="bi bi-person-circle"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalPassword">Cambiar Contraseña</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#" (click)="onExit()"><i class="bi bi-box-arrow-left"></i> Salir</a></li>
+            </ul>
           </li>
         </ul>
       </div>
@@ -39,12 +60,54 @@
   <router-outlet>
     <hr>
   </router-outlet>
+  <!-- FOOTER PPAL -->
+   <!-- Footer -->
+   <footer class="bg-dark text-white text-center text-lg-start mt-3">
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+        © 2025 Compañía:
+        <a class="text-white" href="https://www.logoscreative.com.co/">www.logoscreative.com.co</a>
+    </div>
+  </footer>
+  <!-- FIN FOOTER PPAL -->
 </div>
 
-<!-- SCRIPTS PARA TOOLTIP BOOSTRAP -->
-<script>
-  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl)
-  })
-</script>
+<!-- MODAL CAMBIAR CONTRASEÑA -->
+<div class="modal fade" id="modalPassword" tabindex="-1" aria-labelledby="modalPasswordLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form (ngSubmit)="updatePassword()" #formPassword="ngForm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalPasswordLabel"><i class="bi bi-shield-lock"></i> Cambiar Contraseña</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group mb-3">
+            <label>Nueva contraseña</label>
+            <input type="password" class="form-control" name="password" [(ngModel)]="password" required minlength="6" #pwd="ngModel" [ngClass]="{ 'is-invalid': pwd.invalid && pwd.touched }">
+            <div class="invalid-feedback">Debe tener al menos 6 caracteres</div>
+          </div>
+          <div class="form-group mb-3">
+            <label>Repetir contraseña</label>
+            <input type="password" class="form-control" name="passwordRepeat" [(ngModel)]="passwordRepeat" required minlength="6" #pwdRpt="ngModel" [ngClass]="{ 'is-invalid': pwd.value != pwdRpt.value && pwd.touched }">
+            <div class="invalid-feedback">Las contraseñas no son iguales</div>
+          </div>
+          <!-- ** [ FLAGS ] ** -->
+          <div *ngIf="flagPassword.code == 1" class="alert alert-success" role="alert">
+            <strong><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> {{ flagPassword.message }}</strong> Espere un momento por favor ...
+          </div>
+          <div *ngIf="flagPassword.code == 2" class="alert alert-danger" role="alert">
+            <strong>Error:</strong> {{ flagPassword.message }}
+          </div>
+          <div *ngIf="flagPassword.code == 3" class="alert alert-info" role="alert">
+            <strong>Información: </strong> {{ flagPassword.message }}
+          </div>
+          <!-- ** [ END FLAGS ] ** -->
+        </div>
+        <div class="modal-footer">
+          <button type="submit" [disabled]="formPassword.invalid || !passwordsMatch()" class="btn btn-primary">Actualizar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

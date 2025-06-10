@@ -39,10 +39,10 @@ export class InvoiceComponent implements OnInit {
             this.flagInvoice.code = 0; //status = success
             this.flagInvoice.message = this.register.msj;
             this.invoice = this.register.data;
-            console.log(this.invoice);
             this.invoice = this.invoice.map(invoices => {
               return { ...invoices, conceptos: JSON.parse(invoices.conceptos) };
             });
+            //console.log(this.invoice);
             this.showInvoice = true;
           }
         },

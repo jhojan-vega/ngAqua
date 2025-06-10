@@ -19,6 +19,7 @@ export class OwnerComponent implements OnInit, AfterViewInit {
   public flagOwner:Flag = {code: 0, status: null, message: null};
   public flagRegister:Flag = {code: 0, status: null, message: null};
   public showOwner:boolean = false;
+  public active:boolean = false;
 
   public edit:boolean = false;
   public success:boolean = false;
@@ -78,10 +79,11 @@ export class OwnerComponent implements OnInit, AfterViewInit {
     this.index = index;
     //Se asigan el registro a editar a una copia para cargarla si no hay cambios
     //No se asigna con = para que no quede vinculada a cambios posteriores
-    this.oldOwner = Object.assign({}, editOwner);
+    this.oldOwner = Object.assign({}, editOwner); //this.oldOwner = { ...eidtOwner };
     this.reset();
     this.newOwner = editOwner;
     this.edit = true;
+    this.active = (editOwner.estado == 1) ? true : false;
   }
 
   onSubmit(){
@@ -95,6 +97,8 @@ export class OwnerComponent implements OnInit, AfterViewInit {
         if(this.register.status == "error"){
           this.flagRegister.code = 2; //status = error
           this.flagRegister.message = this.register.msj;
+          //Si hay un error en guardar el registro se debe volver al estado anterior
+          this.owner[this.index] = Object.assign({}, this.oldOwner);
         }else{
           this.flagRegister.code = 3; //status = info
           this.flagRegister.message = this.register.msj;
@@ -110,6 +114,36 @@ export class OwnerComponent implements OnInit, AfterViewInit {
         this.flagRegister.code = 2; //status = error
       }
     );
+  }
+
+  onActive(status:number){
+    var action = (status) ? 'ACTIVAR' : 'SUSPENDER';
+    var respuesta = confirm('¿Esta seguro que desea ' + action + ' este propietario?');
+    if(respuesta){
+      this.flagRegister.code = 1; //status = load
+      this.flagRegister.message = "Cargando datos";
+      this._user.activeOwner(status, this.newOwner.id).subscribe(
+        response => {
+          this.register = response;
+          if(this.register.status == "error"){
+            this.flagRegister.code = 2; //status = error
+            this.flagRegister.message = this.register.msj;
+          }else{
+            this.flagRegister.code = 3; //status = info
+            this.flagRegister.message = this.register.msj;
+            //this.ngOnInit();
+            this.owner[this.index].estado = status; //Actualizar el estado del propietario en la lista
+          }
+        },
+        error => { 
+          this.flagRegister.message = <any>error; 
+          if(this.flagRegister.message == null){
+            this.flagRegister.message = "Error desconocido";
+          }
+          this.flagRegister.code = 2; //status = error
+        }
+      );
+    }
   }
 
 }
