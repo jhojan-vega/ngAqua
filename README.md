@@ -1,28 +1,49 @@
-# NgAqua
+# 💧 ngAqua
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.9.
+## Sistema de Gestión para Acueductos Veredales
 
-## Development server
+ngAqua es una aplicación orientada a apoyar la gestión y los procesos de facturación de acueductos veredales, especialmente en comunidades rurales y pequeñas poblaciones de Colombia.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+El proyecto nació como una solución para organizar y facilitar procesos administrativos relacionados con este tipo de servicios. Fue desarrollado de manera colaborativa y ha sido implementado en escenarios reales de gestión de acueductos veredales.
 
-## Code scaffolding
+## 👨‍💻 Mi participación
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Participé en este proyecto durante mi proceso de formación en Ingeniería de Sistemas, trabajando principalmente en el desarrollo frontend y en la construcción de páginas e interfaces de la aplicación.
 
-## Build
+Esta experiencia me permitió trabajar sobre una solución real, comprender una aplicación desarrollada en equipo y fortalecer conocimientos relacionados con desarrollo web, componentes, servicios y visualización de información.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+## 🛠️ Tecnologías y herramientas
 
-## Running unit tests
+El proyecto utiliza tecnologías como:
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+- Angular 7.3.9
+- TypeScript
+- HTML
+- CSS
+- JavaScript
+- Angular CLI
+- ngx-charts
+- Karma
+- Protractor
+- Git y GitHub
 
-## Running end-to-end tests
+## 📊 Dashboard y visualización de información
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+El proyecto incorpora componentes de dashboard y herramientas de visualización mediante ngx-charts, permitiendo representar información de la aplicación de una manera más clara para el usuario.
 
-## Further help
+## 🤝 Proyecto colaborativo
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
-"# ngAqua" 
+ngAqua fue desarrollado como un proyecto colaborativo. Este repositorio conserva el historial original de Git, incluyendo los commits y autores correspondientes al desarrollo del proyecto.
+
+Mi participación estuvo principalmente relacionada con el frontend y la elaboración de páginas e interfaces dentro del equipo de desarrollo.
+
+## 📚 Contexto profesional
+
+Este proyecto forma parte de mi trayectoria de formación y experiencia práctica en desarrollo de software.
+
+En este repositorio se conserva el código y su historial como evidencia técnica del proyecto y del trabajo realizado de manera colaborativa.
+
+---
+
+**Jhon Jairo Egas**  
+Ingeniero de Sistemas | Desarrollador de Software | Desarrollo Web | Data Analytics | Business Intelligence
